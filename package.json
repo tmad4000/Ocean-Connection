@@ -1,0 +1,19 @@
+{
+  "name": "ocean-connection",
+  "version": "1.0.0",
+  "description": "*Honoring the yearning*",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:57400/git/tmad4000/Ocean-Connection"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "pngjs": "^7.0.0"
+  }
+}
