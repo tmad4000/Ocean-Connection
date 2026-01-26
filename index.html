@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a1628">
+  <title>Ocean Connection</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Main Screen -->
+    <main id="home" class="screen active">
+      <header>
+        <h1>Ocean Connection</h1>
+        <p class="subtitle">honoring the yearning</p>
+      </header>
+
+      <section id="yearning-display">
+        <div class="wave-container">
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+        </div>
+        <div class="time-since">
+          <span id="days-count">-</span>
+          <span class="label">days since touching the water</span>
+        </div>
+        <p id="last-touch-note" class="touch-note"></p>
+      </section>
+
+      <nav class="main-nav">
+        <button class="nav-btn" data-screen="log">
+          <span class="icon">~</span>
+          <span>Log Touch</span>
+        </button>
+        <button class="nav-btn" data-screen="yearning">
+          <span class="icon">&hearts;</span>
+          <span>The Ache</span>
+        </button>
+        <button class="nav-btn" data-screen="practices">
+          <span class="icon">&infin;</span>
+          <span>Practices</span>
+        </button>
+        <button class="nav-btn" data-screen="memories">
+          <span class="icon">&sim;</span>
+          <span>Memories</span>
+        </button>
+      </nav>
+    </main>
+
+    <!-- Log Ocean Touch Screen -->
+    <section id="log" class="screen">
+      <header>
+        <button class="back-btn">&larr;</button>
+        <h2>Log Ocean Touch</h2>
+      </header>
+
+      <form id="log-form">
+        <div class="field">
+          <label for="touch-date">When did you touch the water?</label>
+          <input type="datetime-local" id="touch-date" required>
+        </div>
+
+        <div class="field">
+          <label for="touch-location">Where?</label>
+          <input type="text" id="touch-location" placeholder="Ocean Beach, Pacific...">
+        </div>
+
+        <div class="field">
+          <label for="touch-type">What kind of water?</label>
+          <select id="touch-type">
+            <option value="ocean">Ocean</option>
+            <option value="sea">Sea</option>
+            <option value="lake">Lake</option>
+            <option value="river">River</option>
+            <option value="pool">Pool</option>
+            <option value="bath">Bath</option>
+            <option value="rain">Rain</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="touch-activity">What were you doing?</label>
+          <select id="touch-activity">
+            <option value="surfing">Surfing</option>
+            <option value="swimming">Swimming</option>
+            <option value="wading">Wading</option>
+            <option value="floating">Floating</option>
+            <option value="diving">Diving</option>
+            <option value="paddling">Paddling</option>
+            <option value="just-touching">Just touching</option>
+            <option value="immersed">Fully immersed</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="touch-feeling">How did it feel?</label>
+          <textarea id="touch-feeling" rows="4" placeholder="That first moment when the water met my skin..."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Intensity of connection (1-10)</label>
+          <input type="range" id="touch-intensity" min="1" max="10" value="7">
+          <span id="intensity-value">7</span>
+        </div>
+
+        <button type="submit" class="primary-btn">Save This Touch</button>
+      </form>
+    </section>
+
+    <!-- The Ache / Yearning Screen -->
+    <section id="yearning" class="screen">
+      <header>
+        <button class="back-btn">&larr;</button>
+        <h2>The Ache</h2>
+      </header>
+
+      <div class="yearning-content">
+        <p class="yearning-intro">
+          The yearning is the flow of life, the flow of wisdom.<br>
+          The source from which the value of intellectual activity flows.<br>
+          The stream of life around which the rest of our life activities can orient.
+        </p>
+
+        <div class="current-yearning">
+          <label for="yearning-level">How intense is the yearning right now?</label>
+          <input type="range" id="yearning-level" min="1" max="10" value="5">
+          <div class="yearning-scale">
+            <span>gentle pull</span>
+            <span id="yearning-value">5</span>
+            <span>deep ache</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="yearning-note">What does it feel like right now?</label>
+          <textarea id="yearning-note" rows="4" placeholder="Like missing a lover... like a mother reaching for her child..."></textarea>
+        </div>
+
+        <button id="save-yearning" class="primary-btn">Honor This Feeling</button>
+
+        <div id="yearning-history">
+          <h3>Recent Aches</h3>
+          <ul id="yearning-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Practices Screen -->
+    <section id="practices" class="screen">
+      <header>
+        <button class="back-btn">&larr;</button>
+        <h2>Practices</h2>
+      </header>
+
+      <p class="practices-intro">Ways to honor the connection when you're landlocked</p>
+
+      <div class="practice-cards">
+        <button class="practice-card" data-practice="breathe">
+          <span class="practice-icon">~</span>
+          <h3>Wave Breathing</h3>
+          <p>Breathe like the tide</p>
+        </button>
+
+        <button class="practice-card" data-practice="listen">
+          <span class="practice-icon">))</span>
+          <h3>Ocean Sounds</h3>
+          <p>Listen to the water</p>
+        </button>
+
+        <button class="practice-card" data-practice="remember">
+          <span class="practice-icon">&hearts;</span>
+          <h3>Memory Journey</h3>
+          <p>Revisit a moment</p>
+        </button>
+
+        <button class="practice-card" data-practice="find">
+          <span class="practice-icon">&rarr;</span>
+          <h3>Find Water</h3>
+          <p>Locate water nearby</p>
+        </button>
+
+        <button class="practice-card" data-practice="journal">
+          <span class="practice-icon">&para;</span>
+          <h3>Journal the Ache</h3>
+          <p>Write to the ocean</p>
+        </button>
+
+        <button class="practice-card" data-practice="visualize">
+          <span class="practice-icon">&sim;</span>
+          <h3>Visualization</h3>
+          <p>Feel the water on your skin</p>
+        </button>
+      </div>
+    </section>
+
+    <!-- Memories Screen -->
+    <section id="memories" class="screen">
+      <header>
+        <button class="back-btn">&larr;</button>
+        <h2>Memories</h2>
+      </header>
+
+      <p class="memories-intro">Your ocean touches, held here</p>
+
+      <div id="memories-list" class="memories-grid">
+        <!-- Populated by JS -->
+      </div>
+
+      <div id="no-memories" class="empty-state">
+        <p>No ocean touches logged yet.</p>
+        <p>When you next touch the water, come back and save the moment.</p>
+      </div>
+    </section>
+
+    <!-- Practice Modals -->
+    <div id="practice-modal" class="modal">
+      <div class="modal-content">
+        <button class="close-modal">&times;</button>
+
+        <!-- Wave Breathing -->
+        <div id="practice-breathe" class="practice-content">
+          <h3>Wave Breathing</h3>
+          <div class="breath-guide">
+            <div class="breath-circle"></div>
+            <p id="breath-instruction">Tap to begin</p>
+          </div>
+          <button id="start-breathing" class="primary-btn">Begin</button>
+        </div>
+
+        <!-- Ocean Sounds -->
+        <div id="practice-listen" class="practice-content">
+          <h3>Ocean Sounds</h3>
+          <p>Close your eyes. Let the waves wash over you.</p>
+          <div class="sound-controls">
+            <button id="play-ocean" class="primary-btn">Play Ocean Waves</button>
+            <p class="sound-note">Uses your device's audio</p>
+          </div>
+          <audio id="ocean-audio" loop>
+            <source src="https://cdn.freesound.org/previews/467/467960_6142149-lq.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+
+        <!-- Memory Journey -->
+        <div id="practice-remember" class="practice-content">
+          <h3>Memory Journey</h3>
+          <div class="journey-prompts">
+            <p class="journey-prompt">Close your eyes.</p>
+            <p class="journey-prompt">Remember the last time you touched the ocean.</p>
+            <p class="journey-prompt">Feel the temperature of the water.</p>
+            <p class="journey-prompt">The salt on your lips.</p>
+            <p class="journey-prompt">The sound surrounding you.</p>
+            <p class="journey-prompt">The way your body felt weightless.</p>
+            <p class="journey-prompt">You are still connected.</p>
+          </div>
+          <button id="start-journey" class="primary-btn">Guide Me</button>
+        </div>
+
+        <!-- Find Water -->
+        <div id="practice-find" class="practice-content">
+          <h3>Find Water Nearby</h3>
+          <p>Even small bodies of water can help reconnect.</p>
+          <div id="water-search">
+            <button id="find-water-btn" class="primary-btn">Search Nearby</button>
+            <div id="water-results"></div>
+          </div>
+          <div class="water-alternatives">
+            <p>If you can't find natural water:</p>
+            <ul>
+              <li>A pool or hot tub</li>
+              <li>A fountain in a park</li>
+              <li>A long bath or shower</li>
+              <li>Standing in the rain</li>
+              <li>A bowl of salt water for your hands</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Journal -->
+        <div id="practice-journal" class="practice-content">
+          <h3>Journal to the Ocean</h3>
+          <p>Write to it like a letter to a lover, a prayer to the source.</p>
+          <textarea id="ocean-letter" rows="8" placeholder="Dear Ocean, today I am feeling..."></textarea>
+          <button id="save-letter" class="primary-btn">Save Letter</button>
+        </div>
+
+        <!-- Visualization -->
+        <div id="practice-visualize" class="practice-content">
+          <h3>Visualization</h3>
+          <div class="visualization-guide">
+            <p>Find a comfortable position.</p>
+            <p>Close your eyes.</p>
+            <p>Imagine you are standing at the shore.</p>
+            <p>The water is at your feet.</p>
+            <p>Feel it rise, touch your ankles.</p>
+            <p>Cool. Alive. Connected to everything.</p>
+            <p>You are never truly separate from the water.</p>
+            <p>It is in you. You came from it. You will return to it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Memory Detail Modal -->
+    <div id="memory-modal" class="modal">
+      <div class="modal-content">
+        <button class="close-modal">&times;</button>
+        <div id="memory-detail">
+          <!-- Populated by JS -->
+        </div>
+        <button id="delete-memory" class="danger-btn">Delete This Memory</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

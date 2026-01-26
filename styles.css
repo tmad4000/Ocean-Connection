@@ -1,0 +1,718 @@
+/* Ocean Connection - Styles */
+/* Honoring the yearning */
+
+:root {
+  --deep-ocean: #0a1628;
+  --twilight-blue: #1a2d4a;
+  --ocean-surface: #2d4a6f;
+  --sea-foam: #4a7c8c;
+  --horizon: #6ba3b8;
+  --salt-spray: #a8d4e6;
+  --moonlight: #e8f4f8;
+  --pearl: #ffffff;
+
+  --ache-pink: #d4a5a5;
+  --warmth: #e6c9a8;
+
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 18px;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--deep-ocean);
+  color: var(--moonlight);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  position: relative;
+}
+
+/* Screens */
+.screen {
+  display: none;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--space-lg);
+  padding-bottom: calc(var(--space-xxl) + env(safe-area-inset-bottom));
+  animation: fadeIn 0.4s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Headers */
+header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  position: relative;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-xs);
+}
+
+header h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--horizon);
+  letter-spacing: 0.15em;
+}
+
+.back-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--salt-spray);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--space-sm);
+}
+
+/* Yearning Display */
+#yearning-display {
+  text-align: center;
+  padding: var(--space-xxl) 0;
+  position: relative;
+}
+
+.wave-container {
+  position: absolute;
+  top: 0;
+  left: -20%;
+  right: -20%;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.wave {
+  position: absolute;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(transparent, var(--twilight-blue) 50%, transparent);
+  animation: wave 8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.wave:nth-child(1) {
+  animation-delay: 0s;
+  opacity: 0.7;
+}
+
+.wave:nth-child(2) {
+  animation-delay: -2s;
+  opacity: 0.5;
+}
+
+.wave:nth-child(3) {
+  animation-delay: -4s;
+  opacity: 0.3;
+}
+
+@keyframes wave {
+  0%, 100% { transform: translateX(-25%) translateY(0) rotate(0deg); }
+  50% { transform: translateX(-25%) translateY(10px) rotate(1deg); }
+}
+
+.time-since {
+  position: relative;
+  z-index: 1;
+}
+
+#days-count {
+  display: block;
+  font-size: 4rem;
+  font-weight: 300;
+  color: var(--salt-spray);
+  line-height: 1;
+  margin-bottom: var(--space-sm);
+}
+
+.time-since .label {
+  display: block;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--horizon);
+}
+
+.touch-note {
+  margin-top: var(--space-lg);
+  font-style: italic;
+  color: var(--sea-foam);
+  font-size: 0.85rem;
+}
+
+/* Navigation */
+.main-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.nav-btn {
+  background: linear-gradient(135deg, var(--twilight-blue), var(--ocean-surface));
+  border: 1px solid var(--ocean-surface);
+  border-radius: 12px;
+  padding: var(--space-lg);
+  color: var(--moonlight);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.nav-btn:hover, .nav-btn:active {
+  background: linear-gradient(135deg, var(--ocean-surface), var(--sea-foam));
+  border-color: var(--sea-foam);
+  transform: translateY(-2px);
+}
+
+.nav-btn .icon {
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: var(--space-xs);
+  color: var(--salt-spray);
+}
+
+.nav-btn span:last-child {
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+/* Forms */
+.field {
+  margin-bottom: var(--space-lg);
+}
+
+.field label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  color: var(--salt-spray);
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+}
+
+input[type="text"],
+input[type="datetime-local"],
+select,
+textarea {
+  width: 100%;
+  padding: var(--space-md);
+  background: var(--twilight-blue);
+  border: 1px solid var(--ocean-surface);
+  border-radius: 8px;
+  color: var(--moonlight);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--horizon);
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--twilight-blue);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  background: var(--salt-spray);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Buttons */
+.primary-btn {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(135deg, var(--sea-foam), var(--horizon));
+  border: none;
+  border-radius: 8px;
+  color: var(--deep-ocean);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-btn:hover, .primary-btn:active {
+  background: linear-gradient(135deg, var(--horizon), var(--salt-spray));
+  transform: translateY(-1px);
+}
+
+.danger-btn {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  background: transparent;
+  border: 1px solid var(--ache-pink);
+  border-radius: 8px;
+  color: var(--ache-pink);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: var(--space-lg);
+}
+
+/* Yearning Screen */
+.yearning-content {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.yearning-intro {
+  text-align: center;
+  font-style: italic;
+  color: var(--sea-foam);
+  line-height: 1.8;
+  margin-bottom: var(--space-xl);
+  font-size: 0.95rem;
+}
+
+.current-yearning {
+  margin-bottom: var(--space-xl);
+}
+
+.yearning-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-sm);
+  font-size: 0.8rem;
+  color: var(--sea-foam);
+}
+
+#yearning-value {
+  font-size: 1.2rem;
+  color: var(--ache-pink);
+}
+
+#yearning-history {
+  margin-top: var(--space-xxl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--ocean-surface);
+}
+
+#yearning-history h3 {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--horizon);
+  margin-bottom: var(--space-md);
+}
+
+#yearning-list {
+  list-style: none;
+}
+
+#yearning-list li {
+  padding: var(--space-md);
+  background: var(--twilight-blue);
+  border-radius: 8px;
+  margin-bottom: var(--space-sm);
+  font-size: 0.9rem;
+}
+
+#yearning-list .date {
+  font-size: 0.75rem;
+  color: var(--sea-foam);
+}
+
+#yearning-list .level {
+  color: var(--ache-pink);
+}
+
+/* Practices */
+.practices-intro {
+  text-align: center;
+  color: var(--sea-foam);
+  font-style: italic;
+  margin-bottom: var(--space-xl);
+}
+
+.practice-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.practice-card {
+  background: linear-gradient(135deg, var(--twilight-blue), var(--ocean-surface));
+  border: 1px solid var(--ocean-surface);
+  border-radius: 12px;
+  padding: var(--space-lg);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--moonlight);
+}
+
+.practice-card:hover, .practice-card:active {
+  border-color: var(--horizon);
+  transform: translateY(-2px);
+}
+
+.practice-icon {
+  display: block;
+  font-size: 1.8rem;
+  margin-bottom: var(--space-sm);
+  color: var(--salt-spray);
+}
+
+.practice-card h3 {
+  font-size: 0.95rem;
+  font-weight: 400;
+  margin-bottom: var(--space-xs);
+}
+
+.practice-card p {
+  font-size: 0.75rem;
+  color: var(--sea-foam);
+  font-style: italic;
+}
+
+/* Memories */
+.memories-intro {
+  text-align: center;
+  color: var(--sea-foam);
+  font-style: italic;
+  margin-bottom: var(--space-xl);
+}
+
+.memories-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.memory-card {
+  background: linear-gradient(135deg, var(--twilight-blue), var(--ocean-surface));
+  border: 1px solid var(--ocean-surface);
+  border-radius: 12px;
+  padding: var(--space-lg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.memory-card:hover, .memory-card:active {
+  border-color: var(--horizon);
+}
+
+.memory-card .memory-date {
+  font-size: 0.8rem;
+  color: var(--sea-foam);
+  margin-bottom: var(--space-xs);
+}
+
+.memory-card .memory-location {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-xs);
+}
+
+.memory-card .memory-type {
+  font-size: 0.85rem;
+  color: var(--horizon);
+  font-style: italic;
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-xxl);
+  color: var(--sea-foam);
+  font-style: italic;
+}
+
+.empty-state p {
+  margin-bottom: var(--space-sm);
+}
+
+/* Modals */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 22, 40, 0.95);
+  z-index: 100;
+  padding: var(--space-lg);
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+  display: block;
+}
+
+.modal-content {
+  max-width: 400px;
+  margin: var(--space-xxl) auto;
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--salt-spray);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--space-sm);
+}
+
+.practice-content {
+  display: none;
+  text-align: center;
+}
+
+.practice-content.active {
+  display: block;
+}
+
+.practice-content h3 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: var(--space-lg);
+  color: var(--salt-spray);
+}
+
+.practice-content p {
+  margin-bottom: var(--space-md);
+  line-height: 1.8;
+}
+
+/* Breathing Practice */
+.breath-guide {
+  padding: var(--space-xxl) 0;
+}
+
+.breath-circle {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto var(--space-xl);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--horizon), var(--twilight-blue));
+  opacity: 0.7;
+  transition: all 4s ease-in-out;
+}
+
+.breath-circle.inhale {
+  transform: scale(1.3);
+  opacity: 1;
+  background: radial-gradient(circle, var(--salt-spray), var(--horizon));
+}
+
+.breath-circle.exhale {
+  transform: scale(0.8);
+  opacity: 0.5;
+}
+
+#breath-instruction {
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--salt-spray);
+}
+
+/* Journey prompts */
+.journey-prompts .journey-prompt {
+  opacity: 0;
+  transition: opacity 1s ease;
+  margin-bottom: var(--space-md);
+  font-style: italic;
+  color: var(--sea-foam);
+}
+
+.journey-prompts .journey-prompt.visible {
+  opacity: 1;
+  color: var(--salt-spray);
+}
+
+/* Water alternatives */
+.water-alternatives {
+  margin-top: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--twilight-blue);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.water-alternatives ul {
+  margin-top: var(--space-md);
+  margin-left: var(--space-lg);
+}
+
+.water-alternatives li {
+  margin-bottom: var(--space-sm);
+  color: var(--sea-foam);
+}
+
+#water-results {
+  margin-top: var(--space-lg);
+}
+
+/* Journal */
+#ocean-letter {
+  background: var(--twilight-blue);
+  border: 1px solid var(--ocean-surface);
+  border-radius: 8px;
+  padding: var(--space-md);
+  color: var(--moonlight);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  width: 100%;
+  margin-bottom: var(--space-lg);
+}
+
+/* Visualization */
+.visualization-guide p {
+  line-height: 2;
+  margin-bottom: var(--space-sm);
+  font-style: italic;
+  color: var(--sea-foam);
+}
+
+/* Memory detail */
+#memory-detail {
+  padding-top: var(--space-lg);
+}
+
+#memory-detail h3 {
+  font-size: 1.3rem;
+  font-weight: 300;
+  margin-bottom: var(--space-xs);
+}
+
+#memory-detail .detail-date {
+  color: var(--sea-foam);
+  font-size: 0.9rem;
+  margin-bottom: var(--space-lg);
+}
+
+#memory-detail .detail-section {
+  margin-bottom: var(--space-lg);
+}
+
+#memory-detail .detail-label {
+  font-size: 0.8rem;
+  color: var(--sea-foam);
+  margin-bottom: var(--space-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+#memory-detail .detail-value {
+  font-size: 1rem;
+}
+
+/* Sound controls */
+.sound-controls {
+  padding: var(--space-xl) 0;
+}
+
+.sound-note {
+  font-size: 0.8rem;
+  color: var(--sea-foam);
+  margin-top: var(--space-md);
+}
+
+/* Responsive */
+@media (max-width: 360px) {
+  html {
+    font-size: 16px;
+  }
+
+  .main-nav,
+  .practice-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 500px) {
+  .screen {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+/* Safe area padding for notched phones */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .screen {
+    padding-left: calc(var(--space-lg) + env(safe-area-inset-left));
+    padding-right: calc(var(--space-lg) + env(safe-area-inset-right));
+  }
+}
+
+/* Intensity display */
+#intensity-value {
+  display: block;
+  text-align: center;
+  margin-top: var(--space-sm);
+  font-size: 1.2rem;
+  color: var(--horizon);
+}

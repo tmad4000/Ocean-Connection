@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generate Icons - Ocean Connection</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 2rem;
+      background: #0a1628;
+      color: #e8f4f8;
+    }
+    canvas {
+      border: 1px solid #4a7c8c;
+      margin: 1rem;
+    }
+    a {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: #4a7c8c;
+      color: #0a1628;
+      text-decoration: none;
+      border-radius: 4px;
+      margin: 0.5rem;
+    }
+    .icons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: flex-end;
+    }
+    .icon-box {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ocean Connection Icons</h1>
+  <p>Right-click each canvas and save as PNG, or use the download links.</p>
+
+  <div class="icons">
+    <div class="icon-box">
+      <canvas id="icon192" width="192" height="192"></canvas>
+      <br>
+      <a id="download192" download="icon-192.png">Download 192x192</a>
+    </div>
+    <div class="icon-box">
+      <canvas id="icon512" width="512" height="512"></canvas>
+      <br>
+      <a id="download512" download="icon-512.png">Download 512x512</a>
+    </div>
+  </div>
+
+  <script>
+    function drawIcon(canvas) {
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width;
+      const center = size / 2;
+      const scale = size / 192;
+
+      // Background
+      ctx.fillStyle = '#0a1628';
+      ctx.fillRect(0, 0, size, size);
+
+      // Outer circles
+      ctx.strokeStyle = '#4a7c8c';
+      ctx.lineWidth = 3 * scale;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.arc(center, center, 70 * scale, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#6ba3b8';
+      ctx.lineWidth = 2 * scale;
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      ctx.arc(center, center, 55 * scale, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#a8d4e6';
+      ctx.lineWidth = 2 * scale;
+      ctx.globalAlpha = 0.7;
+      ctx.beginPath();
+      ctx.arc(center, center, 40 * scale, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Wave 1
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = '#e8f4f8';
+      ctx.lineWidth = 4 * scale;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(center - 30 * scale, center);
+      ctx.quadraticCurveTo(center - 20 * scale, center - 15 * scale, center - 10 * scale, center);
+      ctx.quadraticCurveTo(center, center + 15 * scale, center + 10 * scale, center);
+      ctx.quadraticCurveTo(center + 20 * scale, center - 15 * scale, center + 30 * scale, center);
+      ctx.stroke();
+
+      // Wave 2
+      ctx.strokeStyle = '#a8d4e6';
+      ctx.lineWidth = 3 * scale;
+      ctx.globalAlpha = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(center - 25 * scale, center + 12 * scale);
+      ctx.quadraticCurveTo(center - 15 * scale, center - 3 * scale, center - 5 * scale, center + 12 * scale);
+      ctx.quadraticCurveTo(center + 5 * scale, center + 27 * scale, center + 15 * scale, center + 12 * scale);
+      ctx.quadraticCurveTo(center + 25 * scale, center - 3 * scale, center + 35 * scale, center + 12 * scale);
+      ctx.stroke();
+
+      return canvas;
+    }
+
+    const canvas192 = document.getElementById('icon192');
+    const canvas512 = document.getElementById('icon512');
+
+    drawIcon(canvas192);
+    drawIcon(canvas512);
+
+    document.getElementById('download192').href = canvas192.toDataURL('image/png');
+    document.getElementById('download512').href = canvas512.toDataURL('image/png');
+  </script>
+</body>
+</html>
