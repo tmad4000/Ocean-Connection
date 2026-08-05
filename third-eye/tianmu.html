@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIANMU — The Celestial Eye, a Study Companion</title>
+<style>
+  :root {
+    --ink: #0a1020;
+    --ink2: #101a30;
+    --gold: #d9b25c;
+    --gold-dim: #9c8348;
+    --blue: #4a6da8;
+    --paper: #c9d4e8;
+    --dim: #6f7f9c;
+    --verm: #c06a4a;
+    --card: rgba(74, 109, 168, 0.10);
+    --border: rgba(217, 178, 92, 0.22);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background:
+      radial-gradient(ellipse at 50% -10%, #16233f 0%, var(--ink) 55%);
+    color: var(--paper);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 700px; margin: 0 auto; padding: 2rem 1.25rem 6rem; }
+
+  header { text-align: center; padding: 3rem 0 1rem; }
+  .hanzi {
+    font-size: 4rem; color: var(--gold); line-height: 1.15;
+    text-shadow: 0 0 34px rgba(217,178,92,0.35);
+    animation: glow 8s ease-in-out infinite;
+  }
+  @keyframes glow {
+    0%, 100% { text-shadow: 0 0 20px rgba(217,178,92,0.2); }
+    50% { text-shadow: 0 0 44px rgba(217,178,92,0.5); }
+  }
+  h1 { font-weight: normal; letter-spacing: 0.5em; text-indent: 0.5em; font-size: 1.3rem; color: var(--paper); margin-top: 0.8rem; }
+  .subtitle { color: var(--dim); font-style: italic; font-size: 0.95rem; margin-top: 0.5rem; max-width: 460px; margin-left: auto; margin-right: auto; }
+
+  h2 { font-weight: normal; color: var(--gold); letter-spacing: 0.18em; font-size: 1.1rem; margin: 3rem 0 0.4rem; text-transform: uppercase; }
+  h2 .zh { color: var(--dim); letter-spacing: 0.3em; margin-left: 0.6rem; font-size: 0.95rem; }
+  p.lead { color: var(--dim); font-style: italic; margin-bottom: 1.2rem; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.2rem 1.4rem; margin-bottom: 0.9rem; transition: all 0.3s;
+  }
+  .card h3 { font-weight: normal; color: var(--paper); font-size: 1.02rem; }
+  .card .zh { color: var(--gold-dim); margin-left: 0.5rem; font-size: 0.9rem; }
+  .card p { color: var(--dim); font-size: 0.93rem; margin-top: 0.45rem; }
+  .card.click { cursor: pointer; }
+  .card.click:hover { border-color: var(--gold-dim); }
+  .card.open { border-color: var(--gold); }
+  .card .body { display: none; }
+  .card.open .body { display: block; }
+
+  .preface {
+    border-left: 3px solid var(--gold); background: rgba(217,178,92,0.05);
+    padding: 1.1rem 1.4rem; margin: 1.5rem 0; font-size: 0.94rem; color: var(--paper);
+  }
+  .preface a { color: var(--gold); }
+  .caution {
+    border-left: 3px solid var(--verm); background: rgba(192,106,74,0.06);
+    padding: 0.9rem 1.3rem; margin: 1.4rem 0; font-size: 0.9rem; color: var(--dim);
+  }
+
+  /* Passage diagram */
+  .diagram { display: block; margin: 1.2rem auto; max-width: 100%; }
+  .diagram .pulse { animation: travel 6s ease-in-out infinite; }
+  @keyframes travel {
+    0%, 15% { cx: 62px; opacity: 0; }
+    25% { opacity: 1; }
+    70% { cx: 132px; opacity: 1; }
+    85%, 100% { cx: 132px; opacity: 0; }
+  }
+  .figcap { text-align: center; color: var(--dim); font-size: 0.85rem; font-style: italic; margin-bottom: 1rem; }
+
+  /* Five eyes ladder */
+  .ladder { display: flex; flex-direction: column-reverse; gap: 0.45rem; margin: 1.2rem 0; }
+
+  /* Session overlay */
+  #session {
+    position: fixed; inset: 0; background: var(--ink); z-index: 50; display: none;
+    flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem;
+  }
+  #session.on { display: flex; }
+  #ses-hanzi { font-size: 3rem; color: var(--gold); margin-bottom: 2rem; animation: glow 8s ease-in-out infinite; }
+  #ses-text { max-width: 560px; font-size: 1.2rem; min-height: 5rem; transition: opacity 1.2s; }
+  #ses-text.fading { opacity: 0; }
+  #ses-timer { color: var(--dim); font-family: monospace; letter-spacing: 0.2em; margin-top: 1.4rem; font-size: 0.9rem; }
+  .ses-btn {
+    margin-top: 2rem; background: none; border: 1px solid var(--border); color: var(--paper);
+    padding: 0.55rem 1.6rem; border-radius: 999px; cursor: pointer; font-family: inherit; font-size: 0.95rem;
+  }
+  .ses-btn:hover { border-color: var(--gold); color: var(--gold); }
+  #ses-continue { display: none; }
+  #ses-continue.show { display: inline-block; }
+
+  .startbtn {
+    display: block; margin: 1.6rem auto 0; background: none;
+    border: 1px solid var(--gold); color: var(--gold);
+    padding: 0.8rem 2.4rem; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 1rem; letter-spacing: 0.15em;
+    transition: all 0.3s;
+  }
+  .startbtn:hover { background: rgba(217,178,92,0.1); box-shadow: 0 0 30px rgba(217,178,92,0.15); }
+  .voicebtn {
+    display: block; margin: 0.8rem auto 0; background: none;
+    border: 1px solid var(--border); color: var(--dim);
+    padding: 0.35rem 1.1rem; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 0.82rem; letter-spacing: 0.12em;
+  }
+  .voicebtn:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+  footer { text-align: center; color: var(--dim); font-size: 0.8rem; margin-top: 4rem; opacity: 0.7; }
+  footer a { color: var(--gold-dim); }
+  em.g { color: var(--gold); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="hanzi">天目</div>
+    <h1>TIANMU</h1>
+    <div class="subtitle">a study companion to the Celestial Eye teaching of <em>Zhuan Falun</em>, Lecture Two</div>
+  </header>
+
+  <div class="preface">
+    <strong>Read this first.</strong> This page contains no substitute for the text. Within the
+    tradition itself, whatever is transmitted is held to be in the <em>reading of the book</em> —
+    a summary carries nothing. The original is distributed free of charge in dozens of languages at
+    <a href="https://en.falundafa.org" target="_blank" rel="noopener">falundafa.org</a>
+    (Books → <em>Zhuan Falun</em> → Lecture Two, "The Issue of the Celestial Eye").
+    What this companion does is prepare the sitting, keep your attention structured while
+    <em>you</em> read the actual chapter, and hold the space afterward. The text does the work.
+  </div>
+
+  <!-- ============ THE PASSAGE ============ -->
+  <h2>The Passage <span class="zh">通道</span></h2>
+  <p class="lead">What the chapter says the celestial eye is — in paraphrase, as a map, not the territory.</p>
+
+  <svg class="diagram" width="360" height="200" viewBox="0 0 360 200">
+    <!-- head profile -->
+    <path d="M 60 175 C 30 160 22 110 40 78 C 55 48 90 28 130 30 C 175 32 205 60 210 100
+             C 213 125 205 145 195 158 L 198 175"
+          fill="none" stroke="#4a6da8" stroke-width="1.5" opacity="0.7"/>
+    <!-- brow point -->
+    <circle cx="62" cy="95" r="5" fill="none" stroke="#d9b25c" stroke-width="1.5"/>
+    <circle cx="62" cy="95" r="2" fill="#d9b25c"/>
+    <text x="20" y="80" fill="#9c8348" font-size="11" font-family="Georgia">brow point</text>
+    <!-- channel -->
+    <line x1="67" y1="95" x2="128" y2="95" stroke="#d9b25c" stroke-width="1" stroke-dasharray="3 4" opacity="0.8"/>
+    <circle class="pulse" cx="62" cy="95" r="3" fill="#d9b25c"/>
+    <!-- pineal -->
+    <circle cx="134" cy="95" r="8" fill="none" stroke="#d9b25c" stroke-width="1.5"/>
+    <circle cx="134" cy="95" r="3.5" fill="#d9b25c" opacity="0.85"/>
+    <text x="150" y="99" fill="#9c8348" font-size="11" font-family="Georgia">pineal body — "a complete eye"</text>
+    <text x="150" y="116" fill="#6f7f9c" font-size="10" font-family="Georgia" font-style="italic">seeing without the optic nerve</text>
+  </svg>
+  <div class="figcap">The chapter locates the tianmu not in the skin of the forehead but as a passage —<br>from slightly above and between the eyebrows, inward to the pineal body.</div>
+
+  <div class="card static">
+    <p style="color: var(--paper); font-size: 0.95rem;">
+      In paraphrase: the lecture teaches that the pineal body already has the structure of an eye —
+      a lens-like front and light receptivity — which medicine calls vestigial and the cultivation
+      schools call complete. Cultivation does not build a new eye; it opens a <em class="g">channel</em>
+      between the brow and this eye so that it sees directly, without the optic nerve — and therefore
+      is not confined to seeing this one dimension. Near the point of opening, practitioners commonly
+      report a tightening at the forehead, a sensation of the flesh piling toward a point, a drilling
+      inward, then darkness with light in it — a field of essential qi gathers before the eye like a
+      mirror in which images can turn and appear.
+    </p>
+  </div>
+
+  <!-- ============ THE FIVE EYES ============ -->
+  <h2>The Five Eyes <span class="zh">五眼</span></h2>
+  <p class="lead">Vision is graded. Tap each level — read from the bottom up.</p>
+  <div class="ladder" id="ladder"></div>
+  <div class="caution">
+    The chapter's own emphasis: the level at which the eye opens is determined by
+    <em>xinxing</em> — mind-nature, moral character — not by technique, effort, or wanting.
+    "Cultivation depends on oneself; gong depends on the master." Nothing on this page
+    or any page can raise xinxing for you.
+  </div>
+
+  <!-- ============ THE PRINCIPLES ============ -->
+  <h2>The Principles <span class="zh">心性</span></h2>
+  <p class="lead">The teachings around the teaching — the parts every shortcut ignores. Tap to unfold.</p>
+  <div id="principles"></div>
+
+  <!-- ============ THE STUDY SESSION ============ -->
+  <h2>The Study Session <span class="zh">學法</span></h2>
+  <p class="lead">
+    The creative part — and the humble part. The session below does not transmit anything.
+    It seats you, quiets you, and then steps aside while you read the actual chapter,
+    keeping a still frame around the reading the way a lamp keeps a frame around a page.
+  </p>
+  <div class="card static">
+    <h3>How it runs</h3>
+    <p>
+      1. <em class="g">Preparation</em> — two minutes of settling, spine tall, breath soft.<br>
+      2. <em class="g">Reading</em> — open <em>Zhuan Falun</em>, Lecture Two, in the
+      <a href="https://en.falundafa.org" target="_blank" rel="noopener" style="color: var(--gold)">official free text</a>
+      or a printed copy. Read at a walking pace, aloud or silently. The companion holds a quiet
+      clock and reminds you, at long intervals, only of posture and continuity — it will not interrupt
+      the text with its own words.<br>
+      3. <em class="g">Sitting</em> — five minutes with the book closed, attention resting where the reading left it.
+    </p>
+  </div>
+  <button class="startbtn" id="start-session">BEGIN THE SITTING</button>
+  <button class="voicebtn" onclick="Voice.toggle()">voice · on</button>
+
+  <footer>
+    Passage-by-passage companion: <a href="illuminated.html">the Illuminated Edition</a>.<br>
+    This page is an independent study aid, unaffiliated with any organization.
+    All teachings referenced are paraphrased from Lecture Two of <em>Zhuan Falun</em> (Li Hongzhi),
+    which is distributed free at <a href="https://en.falundafa.org" target="_blank" rel="noopener">falundafa.org</a>.
+    It makes no medical or supernatural claims on your behalf.
+  </footer>
+</div>
+
+<!-- ============ SESSION OVERLAY ============ -->
+<div id="session">
+  <div id="ses-hanzi">静</div>
+  <div id="ses-text"></div>
+  <div id="ses-timer"></div>
+  <button class="ses-btn" id="ses-continue">I have finished reading — continue</button>
+  <button class="ses-btn" id="ses-end">end the sitting</button>
+</div>
+
+<script>
+/* ---------------- The Five Eyes ---------------- */
+const EYES = [
+  ['Flesh Eyesight', '肉眼通', 'Seeing through ordinary matter — walls, bodies. The chapter notes this level is deliberately not where the eye is opened for practitioners: it would only entangle one in the affairs of this dimension.'],
+  ['Celestial Eyesight', '天眼通', 'The beginning of seeing beyond this dimension’s surface — energies, fields, scenes not present to the flesh eyes.'],
+  ['Wisdom Eyesight', '慧眼通', 'Seeing into other dimensions as they are. The lecture states practitioners’ eyes are opened at this level — high enough to leave this world’s affairs undisturbed, each person strictly according to what they can bear.'],
+  ['Dharma Eyesight', '法眼通', 'Vision belonging to higher attainment — seeing the workings of the Law across levels. Not a target; a consequence.'],
+  ['Buddha Eyesight', '佛眼通', 'The chapter names it and mostly leaves it alone — vision at the scale of an enlightened being. Named so the ladder is honest about how far it goes, not so anyone aims at it.']
+];
+
+const ladder = document.getElementById('ladder');
+EYES.forEach(([en, zh, desc], i) => {
+  const d = document.createElement('div');
+  d.className = 'card click';
+  d.style.opacity = 0.55 + i * 0.11;
+  d.innerHTML = `<h3>${i + 1} · ${en}<span class="zh">${zh}</span></h3><div class="body"><p>${desc}</p></div>`;
+  d.addEventListener('click', () => d.classList.toggle('open'));
+  ladder.appendChild(d);
+});
+
+/* ---------------- The Principles ---------------- */
+const PRINCIPLES = [
+  ['Pursuit closes the door', '有求', 'The sharpest teaching in the chapter, and the one every "open your third eye in 7 days" product violates in its title: wanting the eye is an attachment, and attachment is precisely what blocks cultivation. The eye opens as a byproduct of a purified mind, never as a prize for chasing it.'],
+  ['It is opened, not forced', '师父开', 'In the lecture’s account the practitioner does not drill the eye open by effort; it is opened for the student, at the level the student’s xinxing can carry. What is yours to do is the character work — truthfulness, compassion, forbearance — not the forcing.'],
+  ['Seeing is not the point', '看见不等于修炼', 'Some students see and some never do, and the chapter is emphatic that neither condition measures cultivation. Envying those who see, or clinging to what was seen, are both listed as ways to stall.'],
+  ['First sight often frightens', '害怕', 'The lecture is practical: people who suddenly see are often scared, and fear itself becomes an obstacle. Knowing this in advance is half the remedy — whatever appears, the instruction is to remain unmoved.'],
+  ['Do not spend it', '不能乱用', 'Using the eye to show off, to win at ordinary affairs, or out of curiosity about others is described as the fastest way to lose it. The faculty is for cultivation, and it degrades exactly as fast as it is monetized.'],
+  ['Children open easily', '孩子', 'Under six, the chapter says, the eye opens with a sentence — and precisely for that reason it is not to be done casually; a child cannot guard what an adult can barely guard.']
+];
+
+const principles = document.getElementById('principles');
+PRINCIPLES.forEach(([en, zh, desc]) => {
+  const d = document.createElement('div');
+  d.className = 'card click';
+  d.innerHTML = `<h3>${en}<span class="zh">${zh}</span></h3><div class="body"><p>${desc}</p></div>`;
+  d.addEventListener('click', () => d.classList.toggle('open'));
+  principles.appendChild(d);
+});
+
+/* ---------------- Study session ---------------- */
+const $ = (s) => document.querySelector(s);
+let timers = [];
+let tick = null;
+
+/* ---------------- Voice engine (browser speech synthesis, all local) ---------------- */
+const Voice = {
+  enabled: true,
+  supported: 'speechSynthesis' in window,
+  voice: null, _q: [], _speaking: false, _timer: null,
+  init() {
+    if (!Voice.supported) { Voice.enabled = false; return; }
+    const pick = () => {
+      const vs = speechSynthesis.getVoices();
+      if (!vs.length) return;
+      Voice.voice =
+        vs.find(v => /^en/i.test(v.lang) && /samantha|serena|karen|moira|tessa|allison|ava|aria|zira|google uk english female|google us english/i.test(v.name)) ||
+        vs.find(v => /^en/i.test(v.lang)) || vs[0];
+    };
+    pick();
+    try { speechSynthesis.onvoiceschanged = pick; } catch (e) { /* older engines */ }
+  },
+  speak(text) {
+    if (!Voice.enabled || !Voice.supported || !text) return;
+    const parts = (text.match(/[^.!?…]+[.!?…]*/g) || [text]).map(s => s.trim()).filter(Boolean);
+    Voice._q.push(...parts);
+    if (!Voice._speaking) Voice._next();
+  },
+  _next() {
+    if (!Voice._q.length) { Voice._speaking = false; return; }
+    Voice._speaking = true;
+    const u = new SpeechSynthesisUtterance(Voice._q.shift());
+    if (Voice.voice) u.voice = Voice.voice;
+    u.rate = 0.82; u.pitch = 0.95;
+    u.onend = () => { Voice._timer = setTimeout(() => Voice._next(), 800); };
+    u.onerror = u.onend;
+    speechSynthesis.speak(u);
+  },
+  stop() {
+    Voice._q = []; Voice._speaking = false; clearTimeout(Voice._timer);
+    if (Voice.supported) speechSynthesis.cancel();
+  },
+  toggle() {
+    Voice.enabled = !Voice.enabled;
+    if (!Voice.enabled) Voice.stop();
+    document.querySelectorAll('.voicebtn').forEach(b => b.textContent = 'voice · ' + (Voice.enabled ? 'on' : 'off'));
+  }
+};
+Voice.init();
+
+const PREP = [
+  [12, 'Sit with the spine upright, hands resting, jaw loose.'],
+  [20, 'Let the breath slow by itself. Nothing to accomplish for two minutes.'],
+  [30, 'Rest a light attention at the point between the eyebrows — resting, not pressing.'],
+  [30, 'Let thoughts arrive and leave without escort.'],
+  [28, 'When the bell of silence feels steady, the reading begins.']
+];
+
+const READING_REMINDERS = [
+  'Posture. Spine tall, book at ease. Continue reading.',
+  'If the mind has wandered from the page, return without commentary.',
+  'Read at a walking pace. Nothing is gained by hurrying a road.',
+  'Still here. Continue reading.'
+];
+
+const CLOSE = [
+  [20, 'Close the book. Close the eyes.'],
+  [80, 'Let what was read settle without review — the way water clears by being left alone.'],
+  [80, 'Attention rests, lightly, where the reading left it.'],
+  [80, 'Nothing to hold. Nothing to picture. Sitting, only.'],
+  [30, 'Slowly return — breath, hands, room.'],
+  [10, 'The sitting is complete.']
+];
+
+function say(text) {
+  const el = $('#ses-text');
+  el.classList.add('fading');
+  setTimeout(() => { el.textContent = text; el.classList.remove('fading'); }, 1200);
+  if (text) Voice.speak(text);
+}
+function fmt(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+function clearAll() { timers.forEach(clearTimeout); timers = []; clearInterval(tick); }
+
+function runPhase(steps, done) {
+  let t = 0;
+  steps.forEach(([dur, text]) => {
+    timers.push(setTimeout(() => say(text), t * 1000));
+    t += dur;
+  });
+  timers.push(setTimeout(done, t * 1000));
+  const total = steps.reduce((a, s) => a + s[0], 0);
+  let elapsed = 0;
+  clearInterval(tick);
+  $('#ses-timer').textContent = fmt(total);
+  tick = setInterval(() => {
+    elapsed++;
+    $('#ses-timer').textContent = fmt(Math.max(0, total - elapsed));
+    if (elapsed >= total) clearInterval(tick);
+  }, 1000);
+}
+
+function startReadingPhase() {
+  $('#ses-hanzi').textContent = '讀';
+  say('Open Lecture Two. Begin reading. This screen will stay out of the way.');
+  $('#ses-continue').classList.add('show');
+  let elapsed = 0;
+  clearInterval(tick);
+  tick = setInterval(() => { elapsed++; $('#ses-timer').textContent = fmt(elapsed); }, 1000);
+  // gentle reminder every 12 minutes, cycling
+  let r = 0;
+  const remind = () => {
+    say(READING_REMINDERS[r % READING_REMINDERS.length]);
+    r++;
+    timers.push(setTimeout(remind, 12 * 60 * 1000));
+  };
+  timers.push(setTimeout(remind, 12 * 60 * 1000));
+}
+
+function startClosePhase() {
+  $('#ses-continue').classList.remove('show');
+  clearAll();
+  $('#ses-hanzi').textContent = '静';
+  runPhase(CLOSE, () => timers.push(setTimeout(endSession, 6000)));
+}
+
+function startSession() {
+  $('#session').classList.add('on');
+  $('#ses-hanzi').textContent = '静';
+  say(PREP[0][1]);
+  runPhase(PREP, startReadingPhase);
+}
+
+function endSession() {
+  clearAll();
+  Voice.stop();
+  $('#session').classList.remove('on');
+  $('#ses-continue').classList.remove('show');
+}
+
+$('#start-session').addEventListener('click', startSession);
+$('#ses-end').addEventListener('click', endSession);
+$('#ses-continue').addEventListener('click', startClosePhase);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && $('#session').classList.contains('on')) endSession();
+});
+</script>
+</body>
+</html>

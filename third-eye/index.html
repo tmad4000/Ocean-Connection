@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AJNA — Third Eye Practice</title>
+<style>
+  :root {
+    --bg: #06040f;
+    --bg2: #0d0a1f;
+    --indigo: #4b3b8f;
+    --violet: #8b7fd4;
+    --glow: #b8a9ff;
+    --gold: #d4af6a;
+    --text: #cfc8ee;
+    --dim: #7a72a3;
+    --card: rgba(75, 59, 143, 0.12);
+    --border: rgba(139, 127, 212, 0.25);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: radial-gradient(ellipse at 50% -20%, #1a1440 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 6rem; }
+
+  /* ---------- Header ---------- */
+  header { text-align: center; padding: 2.5rem 0 1.5rem; }
+  .eye-svg { width: 110px; height: 78px; display: block; margin: 0 auto 1rem; }
+  .eye-svg .iris { animation: irispulse 6s ease-in-out infinite; transform-origin: center; }
+  @keyframes irispulse {
+    0%, 100% { opacity: 0.75; }
+    50% { opacity: 1; filter: drop-shadow(0 0 10px var(--glow)); }
+  }
+  h1 {
+    font-weight: normal; letter-spacing: 0.55em; text-indent: 0.55em;
+    font-size: 1.6rem; color: var(--glow);
+  }
+  .subtitle { color: var(--dim); font-style: italic; font-size: 0.95rem; margin-top: 0.4rem; }
+
+  /* ---------- Nav ---------- */
+  nav { display: flex; justify-content: center; gap: 0.4rem; flex-wrap: wrap; margin: 1.5rem 0 2rem; }
+  nav button {
+    background: none; border: 1px solid var(--border); color: var(--dim);
+    padding: 0.5rem 1.1rem; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 0.9rem; letter-spacing: 0.08em;
+    transition: all 0.3s;
+  }
+  nav button:hover { color: var(--glow); border-color: var(--violet); }
+  nav button.active { background: var(--card); color: var(--glow); border-color: var(--violet); }
+
+  section { display: none; animation: fadein 0.8s ease; }
+  section.visible { display: block; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  h2 { font-weight: normal; color: var(--glow); letter-spacing: 0.15em; font-size: 1.2rem; margin-bottom: 1rem; }
+  h3 { font-weight: normal; color: var(--violet); font-size: 1.05rem; margin-bottom: 0.5rem; }
+  p.lead { color: var(--dim); margin-bottom: 1.5rem; font-style: italic; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.25rem 1.4rem; margin-bottom: 1rem; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .card:hover { border-color: var(--violet); box-shadow: 0 0 24px rgba(139,127,212,0.15); }
+  .card .meta { color: var(--dim); font-size: 0.85rem; margin-top: 0.3rem; }
+  .card.static { cursor: default; }
+
+  /* ---------- Session view ---------- */
+  #session { position: fixed; inset: 0; background: var(--bg); z-index: 50; display: none;
+    flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+  #session.on { display: flex; }
+  #session .focus-object { margin-bottom: 2.5rem; height: 220px; display: flex; align-items: center; justify-content: center; }
+  #instruction {
+    max-width: 560px; font-size: 1.25rem; min-height: 4.5rem; color: var(--text);
+    transition: opacity 1.2s ease;
+  }
+  #instruction.fading { opacity: 0; }
+  #timer { color: var(--dim); font-size: 0.9rem; letter-spacing: 0.2em; margin-top: 1.5rem; font-family: monospace; }
+  #endbtn {
+    margin-top: 2rem; background: none; border: 1px solid var(--border); color: var(--dim);
+    padding: 0.5rem 1.5rem; border-radius: 999px; cursor: pointer; font-family: inherit;
+  }
+  #endbtn:hover { color: var(--glow); border-color: var(--violet); }
+  .voicebtn {
+    display: inline-block; margin-bottom: 1.2rem; background: none;
+    border: 1px solid var(--border); color: var(--dim);
+    padding: 0.35rem 1.1rem; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 0.82rem; letter-spacing: 0.12em;
+  }
+  .voicebtn:hover { color: var(--glow); border-color: var(--violet); }
+
+  /* Orb for visualization */
+  .orb {
+    width: 130px; height: 130px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #cfc0ff 0%, #6a55c8 35%, #2a1e63 75%, transparent 100%);
+    box-shadow: 0 0 60px 20px rgba(122, 100, 220, 0.45);
+    animation: orbbreathe 10s ease-in-out infinite;
+  }
+  @keyframes orbbreathe {
+    0%, 100% { transform: scale(0.85); box-shadow: 0 0 40px 12px rgba(122,100,220,0.3); }
+    50% { transform: scale(1.1); box-shadow: 0 0 90px 30px rgba(150,130,255,0.55); }
+  }
+
+  /* Candle flame for trataka */
+  .candle { display: flex; flex-direction: column; align-items: center; }
+  .flame {
+    width: 26px; height: 70px; border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+    background: radial-gradient(circle at 50% 80%, #fff7d6 0%, #ffd86b 35%, #f2960f 70%, rgba(242,110,15,0) 100%);
+    box-shadow: 0 0 45px 14px rgba(255, 190, 80, 0.35);
+    animation: flicker 2.4s ease-in-out infinite;
+    transform-origin: 50% 100%;
+  }
+  @keyframes flicker {
+    0%, 100% { transform: scaleY(1) rotate(-1deg); }
+    30% { transform: scaleY(1.06) rotate(1.5deg); }
+    55% { transform: scaleY(0.95) rotate(-2deg); }
+    75% { transform: scaleY(1.04) rotate(0.5deg); }
+  }
+  .wick { width: 3px; height: 12px; background: #333; }
+  .candle-body { width: 44px; height: 60px; background: linear-gradient(#2e2848, #1c1833); border-radius: 6px 6px 3px 3px; }
+
+  /* Breath pacer */
+  .pacer {
+    width: 150px; height: 150px; border-radius: 50%;
+    border: 2px solid var(--violet);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--glow); font-size: 0.95rem; letter-spacing: 0.15em;
+    box-shadow: 0 0 40px rgba(139,127,212,0.2);
+    transition: transform linear;
+  }
+
+  /* OM symbol */
+  .om-sign { font-size: 6rem; color: var(--glow); text-shadow: 0 0 40px rgba(184,169,255,0.6);
+    animation: irispulse 8s ease-in-out infinite; font-family: serif; }
+
+  /* ---------- Reader ---------- */
+  #reader { position: fixed; inset: 0; background: var(--bg); z-index: 50; display: none;
+    flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+  #reader.on { display: flex; }
+  #verse {
+    max-width: 620px; font-size: 1.45rem; line-height: 1.9; color: var(--text);
+    transition: opacity 2s ease; font-style: italic;
+  }
+  #verse.fading { opacity: 0; }
+  #verse-source { color: var(--dim); font-size: 0.85rem; letter-spacing: 0.15em; margin-top: 2rem; text-transform: uppercase; }
+  #reader .hint { position: absolute; bottom: 2.5rem; color: var(--dim); font-size: 0.8rem; }
+
+  /* ---------- Sound ---------- */
+  .soundrow { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .soundrow .desc { flex: 1; min-width: 200px; }
+  .playbtn {
+    background: none; border: 1px solid var(--violet); color: var(--glow);
+    width: 90px; padding: 0.5rem 0; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 0.85rem; letter-spacing: 0.1em;
+  }
+  .playbtn.playing { background: var(--indigo); }
+  label.slider-label { display: block; color: var(--dim); font-size: 0.85rem; margin-top: 0.8rem; }
+  input[type=range] { width: 100%; accent-color: var(--violet); }
+
+  .notice {
+    border-left: 3px solid var(--gold); padding: 0.8rem 1.2rem; margin: 2rem 0 1rem;
+    color: var(--dim); font-size: 0.88rem; background: rgba(212,175,106,0.05);
+  }
+  footer { text-align: center; color: var(--dim); font-size: 0.8rem; margin-top: 3rem; opacity: 0.7; }
+  em.gold { color: var(--gold); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="eye-svg" viewBox="0 0 110 78" fill="none">
+      <path d="M5 39 Q55 -8 105 39 Q55 86 5 39 Z" stroke="#8b7fd4" stroke-width="1.5" fill="none"/>
+      <circle class="iris" cx="55" cy="39" r="17" fill="#4b3b8f"/>
+      <circle cx="55" cy="39" r="7" fill="#b8a9ff"/>
+      <path d="M55 4 L55 -2 M30 10 L26 5 M80 10 L84 5" stroke="#8b7fd4" stroke-width="1.2"/>
+    </svg>
+    <h1>AJNA</h1>
+    <div class="subtitle">a quiet instrument for opening the inner eye</div>
+  </header>
+
+  <nav>
+    <button data-tab="practice" class="active">Practice</button>
+    <button data-tab="texts">Texts</button>
+    <button data-tab="sound">Sound</button>
+    <button data-tab="about">About</button>
+  </nav>
+
+  <!-- ================= PRACTICE ================= -->
+  <section id="practice" class="visible">
+    <h2>Practices</h2>
+    <p class="lead">Five doorways — one spoken, four classical. Choose, sit comfortably, and let the screen (or the voice) guide you.</p>
+    <button class="voicebtn" onclick="Voice.toggle()">voice · on</button>
+    <div id="practice-list"></div>
+    <div class="notice">
+      These are traditional contemplative exercises, not medical treatments. Practice seated,
+      never while driving. If you feel dizzy or unwell, open your eyes, breathe normally, and stop.
+      Trataka (gazing) should be done with a screen at comfortable brightness or a real candle at arm's length —
+      blink whenever your eyes ask you to.
+    </div>
+  </section>
+
+  <!-- ================= TEXTS ================= -->
+  <section id="texts">
+    <h2>The Library of Lightning</h2>
+    <p class="lead">
+      Verses chosen for voltage — public-domain passages that mystics used as instruments,
+      not literature. Each opens in <em class="gold">slow reveal</em>: one verse at a time,
+      surfacing and dissolving at the speed of deep reading. Read them the way you would breathe them.
+    </p>
+    <div id="text-list"></div>
+  </section>
+
+  <!-- ================= SOUND ================= -->
+  <section id="sound">
+    <h2>Sound</h2>
+    <p class="lead">Generated live in your browser. Use stereo headphones for the binaural tracks.</p>
+
+    <div class="card static">
+      <div class="soundrow">
+        <div class="desc"><h3>Theta Veil — 6 Hz binaural</h3>
+          <div class="meta">Carrier 210 Hz. The frequency band of hypnagogia, trance, and deep meditation.</div>
+        </div>
+        <button class="playbtn" data-sound="theta">PLAY</button>
+      </div>
+    </div>
+
+    <div class="card static">
+      <div class="soundrow">
+        <div class="desc"><h3>Alpha Field — 10 Hz binaural</h3>
+          <div class="meta">Carrier 200 Hz. Relaxed, eyes-closed alertness; a gentler on-ramp than theta.</div>
+        </div>
+        <button class="playbtn" data-sound="alpha">PLAY</button>
+      </div>
+    </div>
+
+    <div class="card static">
+      <div class="soundrow">
+        <div class="desc"><h3>OM Drone — 136.1 Hz</h3>
+          <div class="meta">The traditional "earth tone" used for chanting support. Hum along on the exhale.</div>
+        </div>
+        <button class="playbtn" data-sound="om">PLAY</button>
+      </div>
+    </div>
+
+    <div class="card static">
+      <div class="desc"><h3>Volume</h3></div>
+      <input type="range" id="vol" min="0" max="100" value="30">
+      <label class="slider-label">Keep it soft — the sound should sit behind the mind, not in front of it.</label>
+    </div>
+
+    <div class="notice">
+      Binaural beats are a mild entrainment aid; research on their effects is mixed, and they are
+      not hypnosis or medicine. Skip them if you have epilepsy, are prone to seizures, or find
+      pulsing audio uncomfortable.
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about">
+    <h2>About this instrument</h2>
+    <div class="card static">
+      <p>
+        "Third eye" is the English nickname for <em class="gold">ājñā</em> — the "command center"
+        between the eyebrows in yogic subtle anatomy, cousin to the "single eye" of the Gospels,
+        the <em class="gold">tisra til</em> of the Sants, and the "eye of the heart" of the Sufis.
+        Across traditions the reports rhyme: when attention is gathered from the senses and rested
+        at one inner point, perception reorganizes — steadier, brighter, more unified.
+      </p>
+      <p style="margin-top:1rem">
+        This app packages the four classical methods for that gathering — <strong>gazing</strong> (trataka),
+        <strong>breath</strong> (pranayama), <strong>inner light visualization</strong>, and
+        <strong>mantra</strong> — with a library of the most electric public-domain contemplative
+        texts we know, delivered slowly enough to work on you.
+      </p>
+      <p style="margin-top:1rem">
+        No account, no network, no data collected. Everything runs in this page.
+      </p>
+      <p style="margin-top:1rem">
+        Companion instrument: <a href="tianmu.html" style="color: var(--gold)">TIANMU</a> —
+        a study companion to the Celestial Eye teaching of <em>Zhuan Falun</em>, Lecture Two,
+        built around reading the original text — and its
+        <a href="illuminated.html" style="color: var(--gold)">Illuminated Edition</a>,
+        a passage-by-passage gloss with figures.
+      </p>
+    </div>
+    <div class="notice">
+      This is a contemplative practice aid, not a medical or psychiatric tool, and it makes no
+      supernatural claims on your behalf. Strong meditation practice can occasionally stir up
+      difficult material; if that happens, ground yourself — food, walking, conversation — and
+      consider working with a qualified teacher. If you have a psychotic-spectrum condition,
+      consult your clinician before intensive meditation.
+    </div>
+    <footer>sit down · breathe · look inward — everything else is commentary</footer>
+  </section>
+</div>
+
+<!-- ================= SESSION OVERLAY ================= -->
+<div id="session">
+  <div class="focus-object" id="focus-object"></div>
+  <div id="instruction"></div>
+  <div id="timer"></div>
+  <div>
+    <button class="voicebtn" style="margin-top:2rem" onclick="Voice.toggle()">voice · on</button>
+  </div>
+  <button id="endbtn">end session</button>
+</div>
+
+<!-- ================= READER OVERLAY ================= -->
+<div id="reader">
+  <div id="verse"></div>
+  <div id="verse-source"></div>
+  <div class="hint">tap / press any key for next verse · Esc to leave</div>
+</div>
+
+<script>
+/* =============================================================
+   AJNA — a third-eye practice instrument
+   All local, no network, no data collected.
+   ============================================================= */
+
+/* ---------------- Practices ---------------- */
+const PRACTICES = [
+  {
+    id: 'journey',
+    name: 'The Opening — A Voice Journey',
+    meta: '~15 min · spoken guidance with long silences · eyes closed, headphones lovely',
+    focus: 'orb',
+    drone: true,
+    steps: [
+      [10, 'Welcome. Find your seat, and let your body arrive before you do.'],
+      [25, 'Sit tall, but not stiff. Let your shoulders fall. Let your hands rest wherever they like.'],
+      [25, 'Close your eyes. We will be here a while. Nothing is required of you.'],
+      [30, 'Begin to notice your breath. Not changing it. Just noticing. The cool air in. The warm air out.'],
+      [35, 'Now let each breath grow a little longer. In… and out. Slow, like a tide.'],
+      [40, 'With every exhale, let something drop. The day. The names. The plans. Let the breath carry them out.'],
+      [35, 'Notice the darkness behind your closed eyes. It is not empty. It is a sky.'],
+      [40, 'Bring your attention, gently, to the space between your eyebrows. Do not press. Attention is a feather, not a finger.'],
+      [45, 'Rest there. If the mind wanders, that is what minds do. Walk it back, kindly, to the brow.'],
+      [45, 'You may begin to feel a faint warmth there. A density. A quiet pulse. Whatever you feel is right.'],
+      [50, 'Now imagine, far back in that inner sky, a single point of light. Small. Indigo and white. Like a star seen from the bottom of a well.'],
+      [50, 'You do not need to force it brighter. Brightness is allowed, not made. With each exhale… allow it.'],
+      [60, 'The star is patient. It has been there longer than your name. Rest with it.'],
+      [20, 'I will be quiet for a while now. Stay with the star. If it fades, stay with the place where it was.'],
+      [110, ''],
+      [40, 'Welcome back. Let the star soften and spread, until light is not something you look at, but the space you are in.'],
+      [30, 'Rest in that.'],
+      [70, ''],
+      [30, 'Now, slowly, let the breath deepen. Feel the weight of your hands. The seat beneath you. The room around you.'],
+      [20, 'When you are ready — not before — let your eyes open. Softly. As if for the first time today.'],
+      [15, 'What you were resting at does not close when this ends. Carry it lightly. Go gently.']
+    ]
+  },
+  {
+    id: 'trataka',
+    name: 'Trataka — Candle Gazing',
+    meta: '~12 min · open-eyed concentration (Gheranda Samhita, ch.1)',
+    focus: 'candle',
+    steps: [
+      [15, 'Sit with your spine tall and your body still. Let your hands rest.'],
+      [20, 'Rest your gaze softly on the flame. Not staring — receiving.'],
+      [60, 'Blink whenever your eyes ask. Keep returning to the flame.'],
+      [90, 'Let the flame be the only thing in the world. Thoughts pass like moths behind it.'],
+      [60, 'Now gently close your eyes.'],
+      [90, 'See the after-image of the flame floating in the darkness behind your brow.'],
+      [120, 'Hold that inner flame at the point between your eyebrows. When it fades, let it fade — keep attending to the place where it was.'],
+      [120, 'Rest in that inner space. Nothing to do. Only the quiet point of light.'],
+      [30, 'Slowly deepen your breath. Feel your hands, your seat.'],
+      [15, 'When you are ready, open your eyes. Carry the stillness with you.']
+    ]
+  },
+  {
+    id: 'breath',
+    name: 'Bhrumadhya Breath — Breathing to the Brow',
+    meta: '~10 min · slow paced breathing with brow focus',
+    focus: 'pacer',
+    steps: [
+      [15, 'Sit comfortably. Close your eyes, or soften them toward the circle.'],
+      [30, 'Breathe with the circle: expand as it expands, release as it releases.'],
+      [120, 'Inhale: imagine the breath rising up the spine to the point between the eyebrows.'],
+      [120, 'Exhale: the breath fountains softly from that point, washing down through the body.'],
+      [120, 'Keep the rhythm. The brow point grows warm, dense, awake — like a held note.'],
+      [90, 'Let the counting go. Let breath breathe itself while attention stays at the brow.'],
+      [30, 'Return to natural breath. Notice the quiet.'],
+      [15, 'Open your eyes when ready.']
+    ]
+  },
+  {
+    id: 'light',
+    name: 'The Inner Star — Light Visualization',
+    meta: '~11 min · imaginal concentration',
+    focus: 'orb',
+    steps: [
+      [20, 'Close your eyes. Watch the darkness behind your eyelids without demanding anything from it.'],
+      [60, 'Notice that the darkness is not flat. It drifts, breathes, has depth.'],
+      [90, 'In that depth, at the point between your eyebrows, imagine a single star — small, indigo-white, infinitely far and perfectly near.'],
+      [120, 'With each exhale, the star grows a little brighter. Do not force it. Brightness is allowed, not made.'],
+      [120, 'Let the star\'s light slowly fill the whole inner sky, until you are not looking at the light — you are in it.'],
+      [90, 'Dissolve the star. Rest in what remains: awareness itself, lit from nowhere.'],
+      [30, 'Feel your body again, your breath, the room.'],
+      [15, 'Open your eyes softly, as if for the first time today.']
+    ]
+  },
+  {
+    id: 'om',
+    name: 'OM — The Mantra of the Bow',
+    meta: '~9 min · chanting; headphones + OM drone recommended',
+    focus: 'om',
+    steps: [
+      [15, 'Sit tall. Take three slow breaths.'],
+      [30, '"OM is the bow, the self is the arrow, Brahman the target." — Mundaka Upanishad. You are about to draw the bow.'],
+      [120, 'Chant OM aloud on each long exhale: A — U — M. Feel A in the belly, U in the chest, M humming in the skull.'],
+      [120, 'Now chant more quietly, and let the M linger — feel the vibration collect between the eyebrows.'],
+      [120, 'Now silently. The mantra continues without the voice, ringing at the brow.'],
+      [90, 'Release even the silent sound. Listen to what is left — the fourth state, the silence after M.'],
+      [30, 'Breathe naturally. Return slowly.'],
+      [15, 'Open your eyes.']
+    ]
+  }
+];
+
+/* ---------------- Texts (public domain translations) ---------------- */
+const TEXTS = [
+  {
+    title: 'The Mandukya Upanishad',
+    source: 'trans. after Max Müller (1884), condensed',
+    meta: '12 verses on OM — the densest text in the canon',
+    verses: [
+      'OM — this imperishable syllable is all this. All that was, all that is, all that shall be, is OM. And whatever else there is, beyond past, present and future — that also is OM.',
+      'All this is Brahman. This self is Brahman. And this self has four quarters.',
+      'The first quarter is the waking state — outward-knowing, enjoying the gross world.',
+      'The second quarter is the dreaming state — inward-knowing, enjoying the subtle world.',
+      'The third quarter is deep sleep — where the sleeper desires no desire and sees no dream, a mass of stillness, made of bliss, with consciousness for its mouth.',
+      'The fourth is neither inward-knowing nor outward-knowing, neither knowing nor unknowing. Unseen, ungraspable, unthinkable, unnameable — the ending of the world, peaceful, benign, without a second. That is the Self. That is to be known.',
+      'The waking state is the letter A. The dream state is the letter U. Deep sleep is the letter M.',
+      'The fourth is without a letter. It is the silence after the sound — into which the syllable, and the world, dissolve.',
+      'One who knows this enters the Self by the Self.'
+    ]
+  },
+  {
+    title: 'The Bow and the Arrow',
+    source: 'Mundaka Upanishad, trans. after Müller',
+    meta: 'The classic instruction for one-pointed meditation',
+    verses: [
+      'Take the great bow of the sacred teaching, place on it the arrow sharpened by devotion,',
+      'draw it with a mind absorbed in That —',
+      'and know, friend: the imperishable is the target.',
+      'OM is the bow, the self is the arrow, Brahman is called its mark.',
+      'It is to be hit by one who is not distracted.',
+      'Then, as the arrow becomes one with the target, the knower becomes one with the known.',
+      'In the highest golden sheath is the stainless, indivisible Brahman. It is the light of lights — that which the knowers of the Self know.',
+      'The sun does not shine there, nor moon and stars, nor these lightnings — much less this fire. When That shines, everything shines after it. By its light all this is lighted.'
+    ]
+  },
+  {
+    title: 'The Single Eye',
+    source: 'Matthew 6:22 & Gospel of Thomas (P. Oxy.), with Psalm 46',
+    meta: 'The contemplative thread inside the Gospels',
+    verses: [
+      'The lamp of the body is the eye.',
+      'If therefore thine eye be single, thy whole body shall be full of light.',
+      'The kingdom of God cometh not with observation; neither shall they say, Lo here! or, lo there! — for behold, the kingdom of God is within you.',
+      'Split the wood: I am there. Lift the stone, and you will find me there.',
+      'Be still, and know that I am God.'
+    ]
+  },
+  {
+    title: 'Yoga Sutras — On the Stilling',
+    source: 'Patanjali, trans. after James Haughton Woods (1914), condensed',
+    meta: 'The engineering manual of meditation, ~2nd c. BCE',
+    verses: [
+      'Now, the teaching of yoga.',
+      'Yoga is the stilling of the turnings of the mind.',
+      'Then the seer rests in its own true nature.',
+      'At other times, the seer takes the shape of the turnings.',
+      'The stilling is reached by practice and by non-grasping.',
+      'Practice is the effort to remain there — grounded, over long time, without interruption, with devotion.',
+      'Or the mind becomes clear and steady by fixing it on one single object.',
+      'When the turnings have dwindled, the mind becomes like a flawless crystal: it takes the color of whatever is placed before it — the perceiver, the perceiving, the perceived.',
+      'Concentration is binding the mind to one place. Meditation is the unbroken flow of attention toward it. Absorption is when only the object shines, as if the mind itself were empty of form.',
+      'These three together, turned inward upon the light within — that is the inner limb of yoga.'
+    ]
+  },
+  {
+    title: 'Tao Te Ching — The Mysterious Female',
+    source: 'Laozi, trans. after James Legge (1891), condensed',
+    meta: 'Emptiness as the door',
+    verses: [
+      'The Tao that can be told is not the eternal Tao. The name that can be named is not the eternal name.',
+      'Free from desire, you see the mystery. Full of desire, you see only the manifestations.',
+      'These two arise from the same source but differ in name. This sameness is the mystery — mystery within mystery — the door to all wonder.',
+      'Thirty spokes share one hub: it is the emptiness at the center that makes the wheel useful.',
+      'We shape clay into a vessel: it is the emptiness inside that makes it a vessel.',
+      'We cut doors and windows for a room: it is the emptiness that makes the room.',
+      'Therefore profit comes from what is there; usefulness from what is not there.',
+      'Can you gather your vital breath and become soft, like a newborn child?',
+      'Can you polish the mysterious mirror of the mind until it is without blemish?',
+      'Attain utmost emptiness. Hold fast to stillness. The ten thousand things rise and fall — and I watch their return.',
+      'Returning to the root is stillness. Stillness is the recovery of one\'s nature.'
+    ]
+  },
+  {
+    title: 'Rumi — The Breeze at Dawn',
+    source: 'Jalāl ad-Dīn Rumi, after the public-domain Nicholson translations',
+    meta: 'The Sufi eye of the heart',
+    verses: [
+      'The breeze at dawn has secrets to tell you. Don\'t go back to sleep.',
+      'You must ask for what you really want. Don\'t go back to sleep.',
+      'People are going back and forth across the doorsill where the two worlds touch.',
+      'The door is round and open. Don\'t go back to sleep.',
+      'Why do you stay in prison, when the door is so wide open?',
+      'Everything in the universe is within you. Ask all from yourself.',
+      'The wound is the place where the Light enters you.',
+      'You are not a drop in the ocean. You are the entire ocean in a drop.'
+    ]
+  },
+  {
+    title: 'The Cloud of Unknowing',
+    source: 'Anonymous English mystic, 14th century, modernized',
+    meta: 'Medieval instructions for imageless contemplation',
+    verses: [
+      'Lift up your heart with a meek stirring of love, and mean God himself, and none of his goods.',
+      'When you first begin, you find only a darkness — as it were a cloud of unknowing, you know not what.',
+      'This darkness and this cloud is between you and your God: you may neither see him clearly by light of understanding, nor feel him in sweetness of love.',
+      'Therefore prepare to abide in this darkness as long as you may, evermore crying after him whom you love.',
+      'And if you are to feel him or see him at all, it must always be in this cloud and in this darkness.',
+      'Smite upon that thick cloud of unknowing with a sharp dart of longing love — and go not thence for anything that befalls.',
+      'Let a little word of one syllable be your dart. Fasten this word to your heart, so that it never goes from you, whatever happens.',
+      'With this word you shall beat upon the cloud and the darkness above you, and smite down all manner of thought under the cloud of forgetting.'
+    ]
+  },
+  {
+    title: 'Blake — The Doors of Perception',
+    source: 'William Blake, 1790–1803',
+    meta: 'The verses Huxley took his title from',
+    verses: [
+      'If the doors of perception were cleansed every thing would appear to man as it is: Infinite.',
+      'For man has closed himself up, till he sees all things thro\' narrow chinks of his cavern.',
+      'To see a World in a Grain of Sand, and a Heaven in a Wild Flower,',
+      'Hold Infinity in the palm of your hand, and Eternity in an hour.',
+      'How do you know but ev\'ry Bird that cuts the airy way, is an immense world of delight, clos\'d by your senses five?',
+      'Energy is Eternal Delight.',
+      'The Eye altering alters all.'
+    ]
+  },
+  {
+    title: 'Meister Eckhart — The Same Eye',
+    source: 'German sermons, 13th–14th c., public-domain renderings',
+    meta: 'The eye with which you see',
+    verses: [
+      'The eye through which I see God is the same eye through which God sees me.',
+      'My eye and God\'s eye are one eye, one seeing, one knowing, one love.',
+      'There is a light in the soul that is uncreated and uncreatable.',
+      'The soul must stand in a now, empty of all things, if it is to know God.',
+      'To be full of things is to be empty of God. To be empty of things is to be full of God.',
+      'God is at home in us; it is we who have gone out for a walk.',
+      'If the only prayer you ever say in your whole life is "thank you," it will suffice.'
+    ]
+  },
+  {
+    title: 'Svetasvatara — Instructions for Practice',
+    source: 'Svetasvatara Upanishad, trans. after Müller, condensed',
+    meta: 'One of the oldest explicit meditation manuals',
+    verses: [
+      'Holding the body steady, the three upper parts erect, turn the senses with the mind toward the heart.',
+      'Let the wise cross, on the raft of Brahman, all the streams which bring fear.',
+      'Compress the breath, and when it is quieted, breathe through the nostrils with gentled movement — as a charioteer restrains restless horses, restrain the mind, undistracted.',
+      'Practice in a clean, level place, free of noise and wind, pleasing to the eye — in a quiet retreat, sheltered.',
+      'Mist, smoke, sun, fire, wind, fireflies, lightning, a clear crystal, a moon — these are the preliminary forms which appear on the way, as Brahman is gradually unveiled.',
+      'When the fivefold quality of yoga has arisen — earth, water, fire, air, sky — there is no sickness, no old age, no suffering, for one who has obtained a body made of the fire of yoga.',
+      'As a mirror covered with dust shines brilliantly when cleaned, so the embodied one, seeing the nature of the Self, becomes unified, the goal attained, and free from sorrow.'
+    ]
+  }
+];
+
+/* ---------------- App state & nav ---------------- */
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+
+/* ---------------- Voice engine (browser speech synthesis, all local) ---------------- */
+const Voice = {
+  enabled: true,
+  supported: 'speechSynthesis' in window,
+  voice: null, _q: [], _speaking: false, _timer: null,
+  init() {
+    if (!Voice.supported) { Voice.enabled = false; return; }
+    const pick = () => {
+      const vs = speechSynthesis.getVoices();
+      if (!vs.length) return;
+      Voice.voice =
+        vs.find(v => /^en/i.test(v.lang) && /samantha|serena|karen|moira|tessa|allison|ava|aria|zira|google uk english female|google us english/i.test(v.name)) ||
+        vs.find(v => /^en/i.test(v.lang)) || vs[0];
+    };
+    pick();
+    try { speechSynthesis.onvoiceschanged = pick; } catch (e) { /* older engines */ }
+  },
+  speak(text) {
+    if (!Voice.enabled || !Voice.supported || !text) return;
+    const parts = (text.match(/[^.!?…]+[.!?…]*/g) || [text]).map(s => s.trim()).filter(Boolean);
+    Voice._q.push(...parts);
+    if (!Voice._speaking) Voice._next();
+  },
+  _next() {
+    if (!Voice._q.length) { Voice._speaking = false; return; }
+    Voice._speaking = true;
+    const u = new SpeechSynthesisUtterance(Voice._q.shift());
+    if (Voice.voice) u.voice = Voice.voice;
+    u.rate = 0.82; u.pitch = 0.95;
+    u.onend = () => { Voice._timer = setTimeout(() => Voice._next(), 800); };
+    u.onerror = u.onend;
+    speechSynthesis.speak(u);
+  },
+  stop() {
+    Voice._q = []; Voice._speaking = false; clearTimeout(Voice._timer);
+    if (Voice.supported) speechSynthesis.cancel();
+  },
+  toggle() {
+    Voice.enabled = !Voice.enabled;
+    if (!Voice.enabled) Voice.stop();
+    $$('.voicebtn').forEach(b => b.textContent = 'voice · ' + (Voice.enabled ? 'on' : 'off'));
+  }
+};
+Voice.init();
+
+$$('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $$('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    $$('section').forEach(s => s.classList.remove('visible'));
+    $('#' + btn.dataset.tab).classList.add('visible');
+  });
+});
+
+/* ---------------- Practice list ---------------- */
+const practiceList = $('#practice-list');
+PRACTICES.forEach(p => {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.innerHTML = `<h3>${p.name}</h3><div class="meta">${p.meta}</div>`;
+  div.addEventListener('click', () => startSession(p));
+  practiceList.appendChild(div);
+});
+
+/* ---------------- Text list ---------------- */
+const textList = $('#text-list');
+TEXTS.forEach(t => {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.innerHTML = `<h3>${t.title}</h3><div class="meta">${t.meta} · ${t.source}</div>`;
+  div.addEventListener('click', () => startReader(t));
+  textList.appendChild(div);
+});
+
+/* ---------------- Session engine ---------------- */
+let sessionTimers = [];
+let tickInterval = null;
+
+function focusHTML(kind) {
+  if (kind === 'candle') return `<div class="candle"><div class="flame"></div><div class="wick"></div><div class="candle-body"></div></div>`;
+  if (kind === 'orb') return `<div class="orb"></div>`;
+  if (kind === 'pacer') return `<div class="pacer" id="pacer">breathe</div>`;
+  if (kind === 'om') return `<div class="om-sign">&#2384;</div>`;
+  return '';
+}
+
+let sessionDrone = null;
+
+function startSession(p) {
+  const overlay = $('#session');
+  $('#focus-object').innerHTML = focusHTML(p.focus);
+  overlay.classList.add('on');
+
+  if (p.focus === 'pacer') runPacer();
+  if (p.drone) { try { sessionDrone = makeDrone(136.1); } catch (e) { sessionDrone = null; } }
+
+  const total = p.steps.reduce((a, s) => a + s[0], 0);
+  let elapsed = 0;
+  const timerEl = $('#timer');
+  tickInterval = setInterval(() => {
+    elapsed++;
+    const remain = Math.max(0, total - elapsed);
+    timerEl.textContent = fmt(remain);
+    if (remain <= 0) clearInterval(tickInterval);
+  }, 1000);
+  timerEl.textContent = fmt(total);
+
+  const instr = $('#instruction');
+  let t = 0;
+  p.steps.forEach(([dur, text], i) => {
+    sessionTimers.push(setTimeout(() => showInstruction(text), t * 1000));
+    t += dur;
+  });
+  sessionTimers.push(setTimeout(() => {
+    bell();
+    showInstruction('The session is complete.');
+    sessionTimers.push(setTimeout(endSession, 8000));
+  }, t * 1000));
+}
+
+function showInstruction(text) {
+  const el = $('#instruction');
+  el.classList.add('fading');
+  setTimeout(() => { el.textContent = text; el.classList.remove('fading'); }, 1200);
+  if (text) Voice.speak(text);
+}
+
+function fmt(s) {
+  return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+
+function endSession() {
+  sessionTimers.forEach(clearTimeout);
+  sessionTimers = [];
+  clearInterval(tickInterval);
+  pacerOn = false;
+  Voice.stop();
+  if (sessionDrone) { sessionDrone.stop(); sessionDrone = null; }
+  $('#session').classList.remove('on');
+}
+$('#endbtn').addEventListener('click', endSession);
+
+/* Breath pacer: 5s in, 5s out (6 breaths/min — coherent breathing) */
+let pacerOn = false;
+function runPacer() {
+  pacerOn = true;
+  const cycle = () => {
+    const el = $('#pacer');
+    if (!pacerOn || !el) return;
+    el.style.transitionDuration = '5s';
+    el.style.transform = 'scale(1.45)';
+    el.textContent = 'in';
+    setTimeout(() => {
+      if (!pacerOn || !$('#pacer')) return;
+      el.style.transform = 'scale(1)';
+      el.textContent = 'out';
+      setTimeout(cycle, 5000);
+    }, 5000);
+  };
+  cycle();
+}
+
+/* ---------------- Reader engine ---------------- */
+let readerState = null;
+
+function startReader(t) {
+  readerState = { text: t, i: -1 };
+  $('#reader').classList.add('on');
+  $('#verse-source').textContent = t.title + ' — ' + t.source;
+  nextVerse();
+}
+
+function nextVerse() {
+  if (!readerState) return;
+  Voice.stop();
+  readerState.i++;
+  const { text, i } = readerState;
+  const el = $('#verse');
+  if (i >= text.verses.length) { closeReader(); return; }
+  el.classList.add('fading');
+  setTimeout(() => {
+    el.textContent = text.verses[i];
+    el.classList.remove('fading');
+    Voice.speak(text.verses[i]);
+  }, i === 0 ? 0 : 2000);
+}
+
+function closeReader() {
+  readerState = null;
+  Voice.stop();
+  $('#reader').classList.remove('on');
+  $('#verse').textContent = '';
+}
+
+$('#reader').addEventListener('click', nextVerse);
+document.addEventListener('keydown', (e) => {
+  if (readerState) {
+    if (e.key === 'Escape') closeReader();
+    else nextVerse();
+  } else if ($('#session').classList.contains('on') && e.key === 'Escape') {
+    endSession();
+  }
+});
+
+/* ---------------- Sound engine ---------------- */
+let audioCtx = null;
+let masterGain = null;
+const sounds = {}; // id -> {nodes: [], stop: fn}
+
+function ctx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = $('#vol').value / 100 * 0.5;
+    masterGain.connect(audioCtx.destination);
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+$('#vol').addEventListener('input', (e) => {
+  if (masterGain) masterGain.gain.value = e.target.value / 100 * 0.5;
+});
+
+function makeBinaural(carrier, beat) {
+  const ac = ctx();
+  const merger = ac.createChannelMerger(2);
+  const oL = ac.createOscillator(), oR = ac.createOscillator();
+  const gL = ac.createGain(), gR = ac.createGain();
+  oL.frequency.value = carrier;
+  oR.frequency.value = carrier + beat;
+  oL.type = oR.type = 'sine';
+  gL.gain.value = gR.gain.value = 0.5;
+  oL.connect(gL).connect(merger, 0, 0);
+  oR.connect(gR).connect(merger, 0, 1);
+  merger.connect(masterGain);
+  oL.start(); oR.start();
+  return { stop: () => { oL.stop(); oR.stop(); merger.disconnect(); } };
+}
+
+function makeDrone(freq) {
+  const ac = ctx();
+  const g = ac.createGain();
+  g.gain.value = 0.4;
+  const oscs = [1, 2, 3, 4].map((mult, i) => {
+    const o = ac.createOscillator();
+    o.type = 'sine';
+    o.frequency.value = freq * mult;
+    const og = ac.createGain();
+    og.gain.value = [0.6, 0.25, 0.12, 0.06][i];
+    o.connect(og).connect(g);
+    o.start();
+    return o;
+  });
+  g.connect(masterGain);
+  return { stop: () => { oscs.forEach(o => o.stop()); g.disconnect(); } };
+}
+
+function bell() {
+  try {
+    const ac = ctx();
+    const o = ac.createOscillator();
+    const g = ac.createGain();
+    o.frequency.value = 432;
+    o.type = 'sine';
+    g.gain.setValueAtTime(0.6, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 4);
+    o.connect(g).connect(masterGain);
+    o.start();
+    o.stop(ac.currentTime + 4);
+  } catch (e) { /* audio unavailable — silent finish */ }
+}
+
+const SOUND_DEFS = {
+  theta: () => makeBinaural(210, 6),
+  alpha: () => makeBinaural(200, 10),
+  om: () => makeDrone(136.1)
+};
+
+$$('.playbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.sound;
+    if (sounds[id]) {
+      sounds[id].stop();
+      delete sounds[id];
+      btn.textContent = 'PLAY';
+      btn.classList.remove('playing');
+    } else {
+      sounds[id] = SOUND_DEFS[id]();
+      btn.textContent = 'STOP';
+      btn.classList.add('playing');
+    }
+  });
+});
+</script>
+</body>
+</html>
