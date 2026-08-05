@@ -29,6 +29,10 @@ A second, standalone instrument: a study companion to the Celestial Eye (天目)
 - An annotated map of the teaching in paraphrase: the brow-to-pineal passage (animated diagram), the Five Eyes ladder, and the surrounding principles (no pursuit, xinxing-first, seeing ≠ cultivation, etc.)
 - A guided **study sitting**: 2-minute preparation → open-ended paced reading of the actual chapter (with quiet posture reminders every 12 minutes) → 5-minute closing sit
 
+## Illuminated Edition (`illuminated.html`)
+
+A passage-by-passage illuminated companion to the "About the Third Eye" section of *Zhuan Falun* Lecture Two (2003 translation). Eleven folios in manuscript style, each covering one movement of the section in order: a short verbatim anchor line (the first sentence of the paragraphs covered, for finding your place), an extended faithful paraphrase, a margin note, and — where a picture genuinely helps — an inline SVG figure (the brow-to-pineal passage, the camera argument, the five-visions ladder, the virtue→vital-essence economy, sub-passageways, the endless tunnel, worlds-within-scales, and pursuit-as-occlusion). The original text is deliberately **not** reproduced (it is copyrighted, distributed free at falundafa.org); every folio deep-links to the official translation, and the intended use is both windows side by side.
+
 ## Usage
 
 ```
