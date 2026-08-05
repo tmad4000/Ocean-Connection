@@ -22,6 +22,13 @@ Mandukya Upanishad · Mundaka Upanishad ("the bow and the arrow") · the "single
 - 136.1 Hz OM drone with harmonics
 - Completion bell
 
+## TIANMU — companion page (`tianmu.html`)
+
+A second, standalone instrument: a study companion to the Celestial Eye (天目) teaching of *Zhuan Falun*, Lecture Two. Deliberately contains **no substitute for the text** (which is copyrighted, though distributed free at falundafa.org) — per the tradition's own frame, whatever is transmitted is in reading the original. The companion provides:
+
+- An annotated map of the teaching in paraphrase: the brow-to-pineal passage (animated diagram), the Five Eyes ladder, and the surrounding principles (no pursuit, xinxing-first, seeing ≠ cultivation, etc.)
+- A guided **study sitting**: 2-minute preparation → open-ended paced reading of the actual chapter (with quiet posture reminders every 12 minutes) → 5-minute closing sit
+
 ## Usage
 
 ```
