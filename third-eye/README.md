@@ -15,6 +15,8 @@ A self-contained, single-file web app for classical "third eye" (ājñā / singl
 
 Mandukya Upanishad · Mundaka Upanishad ("the bow and the arrow") · the "single eye" thread of the Gospels · Patanjali's Yoga Sutras · Tao Te Ching · Rumi · The Cloud of Unknowing · William Blake · Meister Eckhart · Svetasvatara Upanishad
 
+**Voice mode** (browser speech synthesis, fully local): a spoken guided journey — **The Opening** (~15 min, eyes closed, slow-paced narration with deliberate long silences, backed by a soft OM drone) — plus spoken guidance in all four classical practices, spoken verses in the slow-reveal reader, and spoken phase guidance in TIANMU's study sitting. Toggle with the `voice · on/off` buttons; no audio leaves the device.
+
 **Sound engine** (Web Audio, generated live):
 
 - 6 Hz theta binaural beat (carrier 210 Hz)

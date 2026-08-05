@@ -86,6 +86,13 @@
     padding: 0.5rem 1.5rem; border-radius: 999px; cursor: pointer; font-family: inherit;
   }
   #endbtn:hover { color: var(--glow); border-color: var(--violet); }
+  .voicebtn {
+    display: inline-block; margin-bottom: 1.2rem; background: none;
+    border: 1px solid var(--border); color: var(--dim);
+    padding: 0.35rem 1.1rem; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 0.82rem; letter-spacing: 0.12em;
+  }
+  .voicebtn:hover { color: var(--glow); border-color: var(--violet); }
 
   /* Orb for visualization */
   .orb {
@@ -186,7 +193,8 @@
   <!-- ================= PRACTICE ================= -->
   <section id="practice" class="visible">
     <h2>Practices</h2>
-    <p class="lead">Four classical doorways. Choose one, sit comfortably, and let the screen guide you.</p>
+    <p class="lead">Five doorways — one spoken, four classical. Choose, sit comfortably, and let the screen (or the voice) guide you.</p>
+    <button class="voicebtn" onclick="Voice.toggle()">voice · on</button>
     <div id="practice-list"></div>
     <div class="notice">
       These are traditional contemplative exercises, not medical treatments. Practice seated,
@@ -296,6 +304,9 @@
   <div class="focus-object" id="focus-object"></div>
   <div id="instruction"></div>
   <div id="timer"></div>
+  <div>
+    <button class="voicebtn" style="margin-top:2rem" onclick="Voice.toggle()">voice · on</button>
+  </div>
   <button id="endbtn">end session</button>
 </div>
 
@@ -314,6 +325,36 @@
 
 /* ---------------- Practices ---------------- */
 const PRACTICES = [
+  {
+    id: 'journey',
+    name: 'The Opening — A Voice Journey',
+    meta: '~15 min · spoken guidance with long silences · eyes closed, headphones lovely',
+    focus: 'orb',
+    drone: true,
+    steps: [
+      [10, 'Welcome. Find your seat, and let your body arrive before you do.'],
+      [25, 'Sit tall, but not stiff. Let your shoulders fall. Let your hands rest wherever they like.'],
+      [25, 'Close your eyes. We will be here a while. Nothing is required of you.'],
+      [30, 'Begin to notice your breath. Not changing it. Just noticing. The cool air in. The warm air out.'],
+      [35, 'Now let each breath grow a little longer. In… and out. Slow, like a tide.'],
+      [40, 'With every exhale, let something drop. The day. The names. The plans. Let the breath carry them out.'],
+      [35, 'Notice the darkness behind your closed eyes. It is not empty. It is a sky.'],
+      [40, 'Bring your attention, gently, to the space between your eyebrows. Do not press. Attention is a feather, not a finger.'],
+      [45, 'Rest there. If the mind wanders, that is what minds do. Walk it back, kindly, to the brow.'],
+      [45, 'You may begin to feel a faint warmth there. A density. A quiet pulse. Whatever you feel is right.'],
+      [50, 'Now imagine, far back in that inner sky, a single point of light. Small. Indigo and white. Like a star seen from the bottom of a well.'],
+      [50, 'You do not need to force it brighter. Brightness is allowed, not made. With each exhale… allow it.'],
+      [60, 'The star is patient. It has been there longer than your name. Rest with it.'],
+      [20, 'I will be quiet for a while now. Stay with the star. If it fades, stay with the place where it was.'],
+      [110, ''],
+      [40, 'Welcome back. Let the star soften and spread, until light is not something you look at, but the space you are in.'],
+      [30, 'Rest in that.'],
+      [70, ''],
+      [30, 'Now, slowly, let the breath deepen. Feel the weight of your hands. The seat beneath you. The room around you.'],
+      [20, 'When you are ready — not before — let your eyes open. Softly. As if for the first time today.'],
+      [15, 'What you were resting at does not close when this ends. Carry it lightly. Go gently.']
+    ]
+  },
   {
     id: 'trataka',
     name: 'Trataka — Candle Gazing',
@@ -540,6 +581,51 @@ const TEXTS = [
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
+/* ---------------- Voice engine (browser speech synthesis, all local) ---------------- */
+const Voice = {
+  enabled: true,
+  supported: 'speechSynthesis' in window,
+  voice: null, _q: [], _speaking: false, _timer: null,
+  init() {
+    if (!Voice.supported) { Voice.enabled = false; return; }
+    const pick = () => {
+      const vs = speechSynthesis.getVoices();
+      if (!vs.length) return;
+      Voice.voice =
+        vs.find(v => /^en/i.test(v.lang) && /samantha|serena|karen|moira|tessa|allison|ava|aria|zira|google uk english female|google us english/i.test(v.name)) ||
+        vs.find(v => /^en/i.test(v.lang)) || vs[0];
+    };
+    pick();
+    try { speechSynthesis.onvoiceschanged = pick; } catch (e) { /* older engines */ }
+  },
+  speak(text) {
+    if (!Voice.enabled || !Voice.supported || !text) return;
+    const parts = (text.match(/[^.!?…]+[.!?…]*/g) || [text]).map(s => s.trim()).filter(Boolean);
+    Voice._q.push(...parts);
+    if (!Voice._speaking) Voice._next();
+  },
+  _next() {
+    if (!Voice._q.length) { Voice._speaking = false; return; }
+    Voice._speaking = true;
+    const u = new SpeechSynthesisUtterance(Voice._q.shift());
+    if (Voice.voice) u.voice = Voice.voice;
+    u.rate = 0.82; u.pitch = 0.95;
+    u.onend = () => { Voice._timer = setTimeout(() => Voice._next(), 800); };
+    u.onerror = u.onend;
+    speechSynthesis.speak(u);
+  },
+  stop() {
+    Voice._q = []; Voice._speaking = false; clearTimeout(Voice._timer);
+    if (Voice.supported) speechSynthesis.cancel();
+  },
+  toggle() {
+    Voice.enabled = !Voice.enabled;
+    if (!Voice.enabled) Voice.stop();
+    $$('.voicebtn').forEach(b => b.textContent = 'voice · ' + (Voice.enabled ? 'on' : 'off'));
+  }
+};
+Voice.init();
+
 $$('nav button').forEach(btn => {
   btn.addEventListener('click', () => {
     $$('nav button').forEach(b => b.classList.remove('active'));
@@ -581,12 +667,15 @@ function focusHTML(kind) {
   return '';
 }
 
+let sessionDrone = null;
+
 function startSession(p) {
   const overlay = $('#session');
   $('#focus-object').innerHTML = focusHTML(p.focus);
   overlay.classList.add('on');
 
   if (p.focus === 'pacer') runPacer();
+  if (p.drone) { try { sessionDrone = makeDrone(136.1); } catch (e) { sessionDrone = null; } }
 
   const total = p.steps.reduce((a, s) => a + s[0], 0);
   let elapsed = 0;
@@ -610,14 +699,13 @@ function startSession(p) {
     showInstruction('The session is complete.');
     sessionTimers.push(setTimeout(endSession, 8000));
   }, t * 1000));
-
-  showInstruction(p.steps[0][1]);
 }
 
 function showInstruction(text) {
   const el = $('#instruction');
   el.classList.add('fading');
   setTimeout(() => { el.textContent = text; el.classList.remove('fading'); }, 1200);
+  if (text) Voice.speak(text);
 }
 
 function fmt(s) {
@@ -629,6 +717,8 @@ function endSession() {
   sessionTimers = [];
   clearInterval(tickInterval);
   pacerOn = false;
+  Voice.stop();
+  if (sessionDrone) { sessionDrone.stop(); sessionDrone = null; }
   $('#session').classList.remove('on');
 }
 $('#endbtn').addEventListener('click', endSession);
@@ -665,6 +755,7 @@ function startReader(t) {
 
 function nextVerse() {
   if (!readerState) return;
+  Voice.stop();
   readerState.i++;
   const { text, i } = readerState;
   const el = $('#verse');
@@ -673,11 +764,13 @@ function nextVerse() {
   setTimeout(() => {
     el.textContent = text.verses[i];
     el.classList.remove('fading');
+    Voice.speak(text.verses[i]);
   }, i === 0 ? 0 : 2000);
 }
 
 function closeReader() {
   readerState = null;
+  Voice.stop();
   $('#reader').classList.remove('on');
   $('#verse').textContent = '';
 }

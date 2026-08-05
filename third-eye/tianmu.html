@@ -108,6 +108,13 @@
     transition: all 0.3s;
   }
   .startbtn:hover { background: rgba(217,178,92,0.1); box-shadow: 0 0 30px rgba(217,178,92,0.15); }
+  .voicebtn {
+    display: block; margin: 0.8rem auto 0; background: none;
+    border: 1px solid var(--border); color: var(--dim);
+    padding: 0.35rem 1.1rem; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 0.82rem; letter-spacing: 0.12em;
+  }
+  .voicebtn:hover { color: var(--gold); border-color: var(--gold-dim); }
 
   footer { text-align: center; color: var(--dim); font-size: 0.8rem; margin-top: 4rem; opacity: 0.7; }
   footer a { color: var(--gold-dim); }
@@ -206,6 +213,7 @@
     </p>
   </div>
   <button class="startbtn" id="start-session">BEGIN THE SITTING</button>
+  <button class="voicebtn" onclick="Voice.toggle()">voice · on</button>
 
   <footer>
     Passage-by-passage companion: <a href="illuminated.html">the Illuminated Edition</a>.<br>
@@ -269,6 +277,51 @@ const $ = (s) => document.querySelector(s);
 let timers = [];
 let tick = null;
 
+/* ---------------- Voice engine (browser speech synthesis, all local) ---------------- */
+const Voice = {
+  enabled: true,
+  supported: 'speechSynthesis' in window,
+  voice: null, _q: [], _speaking: false, _timer: null,
+  init() {
+    if (!Voice.supported) { Voice.enabled = false; return; }
+    const pick = () => {
+      const vs = speechSynthesis.getVoices();
+      if (!vs.length) return;
+      Voice.voice =
+        vs.find(v => /^en/i.test(v.lang) && /samantha|serena|karen|moira|tessa|allison|ava|aria|zira|google uk english female|google us english/i.test(v.name)) ||
+        vs.find(v => /^en/i.test(v.lang)) || vs[0];
+    };
+    pick();
+    try { speechSynthesis.onvoiceschanged = pick; } catch (e) { /* older engines */ }
+  },
+  speak(text) {
+    if (!Voice.enabled || !Voice.supported || !text) return;
+    const parts = (text.match(/[^.!?…]+[.!?…]*/g) || [text]).map(s => s.trim()).filter(Boolean);
+    Voice._q.push(...parts);
+    if (!Voice._speaking) Voice._next();
+  },
+  _next() {
+    if (!Voice._q.length) { Voice._speaking = false; return; }
+    Voice._speaking = true;
+    const u = new SpeechSynthesisUtterance(Voice._q.shift());
+    if (Voice.voice) u.voice = Voice.voice;
+    u.rate = 0.82; u.pitch = 0.95;
+    u.onend = () => { Voice._timer = setTimeout(() => Voice._next(), 800); };
+    u.onerror = u.onend;
+    speechSynthesis.speak(u);
+  },
+  stop() {
+    Voice._q = []; Voice._speaking = false; clearTimeout(Voice._timer);
+    if (Voice.supported) speechSynthesis.cancel();
+  },
+  toggle() {
+    Voice.enabled = !Voice.enabled;
+    if (!Voice.enabled) Voice.stop();
+    document.querySelectorAll('.voicebtn').forEach(b => b.textContent = 'voice · ' + (Voice.enabled ? 'on' : 'off'));
+  }
+};
+Voice.init();
+
 const PREP = [
   [12, 'Sit with the spine upright, hands resting, jaw loose.'],
   [20, 'Let the breath slow by itself. Nothing to accomplish for two minutes.'],
@@ -297,6 +350,7 @@ function say(text) {
   const el = $('#ses-text');
   el.classList.add('fading');
   setTimeout(() => { el.textContent = text; el.classList.remove('fading'); }, 1200);
+  if (text) Voice.speak(text);
 }
 function fmt(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
 function clearAll() { timers.forEach(clearTimeout); timers = []; clearInterval(tick); }
@@ -352,6 +406,7 @@ function startSession() {
 
 function endSession() {
   clearAll();
+  Voice.stop();
   $('#session').classList.remove('on');
   $('#ses-continue').classList.remove('show');
 }
