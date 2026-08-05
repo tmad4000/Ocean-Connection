@@ -33,6 +33,10 @@ A second, standalone instrument: a study companion to the Celestial Eye (天目)
 
 A passage-by-passage illuminated companion to the "About the Third Eye" section of *Zhuan Falun* Lecture Two (2003 translation). Eleven folios in manuscript style, each covering one movement of the section in order: a short verbatim anchor line (the first sentence of the paragraphs covered, for finding your place), an extended faithful paraphrase, a margin note, and — where a picture genuinely helps — an inline SVG figure (the brow-to-pineal passage, the camera argument, the five-visions ladder, the virtue→vital-essence economy, sub-passageways, the endless tunnel, worlds-within-scales, and pursuit-as-occlusion). The original text is deliberately **not** reproduced (it is copyrighted, distributed free at falundafa.org); every folio deep-links to the official translation, and the intended use is both windows side by side.
 
+## Verbatim study copy (`verbatim.html`)
+
+The same eleven-folio illuminated layout, but with the **complete verbatim text** of "About the Third Eye" (all 28 paragraphs, extracted from the official 2003 translation at falundafa.org) as the primary layer, with gloss and figures subordinate. The text is © Li Hongzhi, distributed free by the rights holder; this copy exists for personal study in a private repository and should not be republished — link others to falundafa.org instead.
+
 ## Usage
 
 ```
